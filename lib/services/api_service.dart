@@ -12,12 +12,33 @@ class ApiService {
   // ── Change this URL to match your Laravel server address ──
   static const String _baseUrl = 'http://127.0.0.1:8000/api';
 
+  /// Bearer token for authenticated requests (set after login).
+  static String? _token;
+
+  /// Set the auth token for all subsequent API calls.
+  static void setToken(String? token) {
+    _token = token;
+  }
+
+  /// Common headers with optional auth.
+  Map<String, String> get _headers => {
+    'Accept': 'application/json',
+    if (_token != null) 'Authorization': 'Bearer $_token',
+  };
+
+  /// Common headers for JSON body requests.
+  Map<String, String> get _jsonHeaders => {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Accept': 'application/json',
+    if (_token != null) 'Authorization': 'Bearer $_token',
+  };
+
   // ── READ ──────────────────────────────────────────────────────────────
   /// Fetch all tasks (GET /api/tasks)
   Future<List<Task>> fetchTasks() async {
     final response = await http.get(
       Uri.parse('$_baseUrl/tasks'),
-      headers: {'Accept': 'application/json'},
+      headers: _headers,
     );
 
     if (response.statusCode == 200) {
@@ -33,7 +54,7 @@ class ApiService {
   Future<Task> fetchTask(int id) async {
     final response = await http.get(
       Uri.parse('$_baseUrl/tasks/$id'),
-      headers: {'Accept': 'application/json'},
+      headers: _headers,
     );
 
     if (response.statusCode == 200) {
@@ -49,10 +70,7 @@ class ApiService {
   Future<Task> createTask(Task task) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/tasks'),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json',
-      },
+      headers: _jsonHeaders,
       body: json.encode(task.toJson()),
     );
 
@@ -69,10 +87,7 @@ class ApiService {
   Future<Task> updateTask(Task task) async {
     final response = await http.put(
       Uri.parse('$_baseUrl/tasks/${task.id}'),
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Accept': 'application/json',
-      },
+      headers: _jsonHeaders,
       body: json.encode(task.toJson()),
     );
 
@@ -89,7 +104,7 @@ class ApiService {
   Future<bool> deleteTask(int id) async {
     final response = await http.delete(
       Uri.parse('$_baseUrl/tasks/$id'),
-      headers: {'Accept': 'application/json'},
+      headers: _headers,
     );
 
     if (response.statusCode == 200) {

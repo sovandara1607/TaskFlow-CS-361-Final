@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../models/task.dart';
+import '../services/api_service.dart';
+import '../services/auth_provider.dart';
+import '../services/app_settings_provider.dart';
+import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
-import '../utils/validators.dart';
-import '../widgets/custom_text_field.dart';
 
-/// Tiimo‑style Profile Screen — soft gradient header, clean form.
+/// Profile screen that displays the authenticated user's real credentials
+/// and live task statistics fetched from the API.
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -13,39 +18,65 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController(text: 'Dara Student');
-  final _emailCtrl = TextEditingController(text: 'dara@university.edu');
-  final _phoneCtrl = TextEditingController(text: '+855 12 345 678');
-  bool _isEditing = false;
+  List<Task>? _tasks;
+  bool _loadingTasks = true;
 
   @override
-  void dispose() {
-    _nameCtrl.dispose();
-    _emailCtrl.dispose();
-    _phoneCtrl.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    try {
+      final tasks = await ApiService().fetchTasks();
+      if (mounted)
+        setState(() {
+          _tasks = tasks;
+          _loadingTasks = false;
+        });
+    } catch (_) {
+      if (mounted) setState(() => _loadingTasks = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final auth = context.watch<AuthProvider>();
+    final settings = context.watch<AppSettingsProvider>();
+    final lang = settings.locale;
+
+    final username = auth.userName ?? 'User';
+    final email = auth.userEmail ?? '—';
+    final userId = auth.userId;
+    final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
+
+    // Task stats
+    final total = _tasks?.length ?? 0;
+    final completed = _tasks?.where((t) => t.status == 'completed').length ?? 0;
+    final pending = total - completed;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Profile',
+          AppLocalizations.tr('profile', lang),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w700,
-            color: AppConstants.textPrimary,
+            color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              _isEditing ? Icons.close_rounded : Icons.edit_rounded,
+            icon: const Icon(
+              Icons.refresh_rounded,
               color: AppConstants.primaryColor,
             ),
-            tooltip: _isEditing ? 'Cancel' : 'Edit Profile',
-            onPressed: () => setState(() => _isEditing = !_isEditing),
+            tooltip: 'Refresh',
+            onPressed: () {
+              setState(() => _loadingTasks = true);
+              _loadTasks();
+            },
           ),
         ],
       ),
@@ -53,174 +84,200 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(AppConstants.defaultPadding),
         child: Column(
           children: [
-            // ── Avatar with gradient circle ──
+            // ── Avatar ──
             Center(
-              child: Stack(
-                children: [
-                  Container(
-                    width: 116,
-                    height: 116,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: const LinearGradient(
-                        colors: [
-                          AppConstants.primaryLight,
-                          AppConstants.accentPink,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppConstants.primaryColor.withValues(
-                            alpha: 0.2,
-                          ),
-                          blurRadius: 20,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.all(3),
-                      child: CircleAvatar(
-                        radius: 54,
-                        backgroundImage: NetworkImage(
-                          'https://i.pravatar.cc/150?img=12',
-                        ),
-                      ),
-                    ),
+              child: Container(
+                width: 116,
+                height: 116,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    colors: [
+                      AppConstants.primaryLight,
+                      AppConstants.accentPink,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  Positioned(
-                    bottom: 2,
-                    right: 2,
-                    child: Container(
-                      decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppConstants.primaryColor.withValues(alpha: 0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: CircleAvatar(
+                    radius: 54,
+                    backgroundColor: isDark
+                        ? AppConstants.darkCard
+                        : Colors.grey[200],
+                    child: Text(
+                      initial,
+                      style: GoogleFonts.poppins(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w700,
                         color: AppConstants.primaryColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 3),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.camera_alt_rounded,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Camera feature coming soon!'),
-                            ),
-                          );
-                        },
-                        constraints: const BoxConstraints(
-                          minWidth: 34,
-                          minHeight: 34,
-                        ),
-                        padding: EdgeInsets.zero,
                       ),
                     ),
                   ),
-                ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
+
+            // ── Username ──
             Text(
-              'Dara Student',
+              username,
               style: GoogleFonts.poppins(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
-                color: AppConstants.textPrimary,
+                color: isDark ? Colors.white : AppConstants.textPrimary,
               ),
             ),
             const SizedBox(height: 2),
             Text(
-              'Computer Science — Year 4',
+              email,
               style: GoogleFonts.poppins(
                 fontSize: 14,
-                color: AppConstants.textSecondary,
+                color: isDark ? Colors.white54 : AppConstants.textSecondary,
               ),
             ),
             const SizedBox(height: 28),
 
-            // ── Form ──
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  CustomTextField(
-                    controller: _nameCtrl,
-                    label: 'Full Name',
-                    prefixIcon: Icons.person_rounded,
-                    validator: Validators.required,
+            // ── Task Statistics ──
+            _SectionHeader(
+              title: AppLocalizations.tr('task_statistics', lang),
+              isDark: isDark,
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                _StatCard(
+                  label: 'Total',
+                  value: _loadingTasks ? '…' : '$total',
+                  color: AppConstants.primaryColor,
+                  isDark: isDark,
+                ),
+                const SizedBox(width: 10),
+                _StatCard(
+                  label: 'Done',
+                  value: _loadingTasks ? '…' : '$completed',
+                  color: AppConstants.successColor,
+                  isDark: isDark,
+                ),
+                const SizedBox(width: 10),
+                _StatCard(
+                  label: 'Pending',
+                  value: _loadingTasks ? '…' : '$pending',
+                  color: AppConstants.warningColor,
+                  isDark: isDark,
+                ),
+              ],
+            ),
+            const SizedBox(height: 28),
+
+            // ── Account Details ──
+            _SectionHeader(
+              title: AppLocalizations.tr('account_details', lang),
+              isDark: isDark,
+            ),
+            const SizedBox(height: 10),
+
+            _InfoCard(
+              icon: Icons.person_rounded,
+              title: 'Username',
+              subtitle: username,
+              isDark: isDark,
+            ),
+            _InfoCard(
+              icon: Icons.email_rounded,
+              title: 'Email',
+              subtitle: email,
+              isDark: isDark,
+            ),
+            if (userId != null)
+              _InfoCard(
+                icon: Icons.tag_rounded,
+                title: 'User ID',
+                subtitle: '#$userId',
+                isDark: isDark,
+              ),
+            _InfoCard(
+              icon: Icons.verified_user_rounded,
+              title: 'Auth Status',
+              subtitle: auth.isAuthenticated
+                  ? 'Authenticated'
+                  : 'Not signed in',
+              isDark: isDark,
+            ),
+
+            const SizedBox(height: 28),
+
+            // ── App Info ──
+            _SectionHeader(title: 'App Info', isDark: isDark),
+            const SizedBox(height: 10),
+
+            _InfoCard(
+              icon: Icons.school_rounded,
+              title: AppLocalizations.tr('university', lang),
+              subtitle: 'Royal University of Phnom Penh',
+              isDark: isDark,
+            ),
+            _InfoCard(
+              icon: Icons.menu_book_rounded,
+              title: AppLocalizations.tr('course', lang),
+              subtitle: 'CS361 — Mobile App Development',
+              isDark: isDark,
+            ),
+            _InfoCard(
+              icon: Icons.calendar_today_rounded,
+              title: AppLocalizations.tr('semester', lang),
+              subtitle: 'Spring 2026',
+              isDark: isDark,
+            ),
+
+            const SizedBox(height: 28),
+
+            // ── Logout button ──
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: OutlinedButton.icon(
+                icon: const Icon(
+                  Icons.logout_rounded,
+                  color: AppConstants.errorColor,
+                ),
+                label: Text(
+                  AppLocalizations.tr('logout', lang),
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    color: AppConstants.errorColor,
                   ),
-                  CustomTextField(
-                    controller: _emailCtrl,
-                    label: 'Email',
-                    prefixIcon: Icons.email_rounded,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: Validators.email,
+                ),
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppConstants.errorColor),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
                   ),
-                  CustomTextField(
-                    controller: _phoneCtrl,
-                    label: 'Phone',
-                    prefixIcon: Icons.phone_rounded,
-                    keyboardType: TextInputType.phone,
-                    validator: Validators.required,
-                  ),
-                ],
+                ),
+                onPressed: () async {
+                  final auth = context.read<AuthProvider>();
+                  await auth.logout();
+                  ApiService.setToken(null);
+                  if (mounted) {
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/login',
+                      (_) => false,
+                    );
+                  }
+                },
               ),
             ),
-            const SizedBox(height: 16),
-
-            if (_isEditing) ...[
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.save_rounded),
-                  label: const Text('Save Changes'),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      setState(() => _isEditing = false);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Profile updated successfully!'),
-                          backgroundColor: AppConstants.successColor,
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () => setState(() => _isEditing = false),
-                child: Text(
-                  'Discard Changes',
-                  style: GoogleFonts.poppins(color: AppConstants.textSecondary),
-                ),
-              ),
-            ] else ...[
-              _InfoCard(
-                emoji: '🏫',
-                title: 'University',
-                subtitle: 'Royal University of Phnom Penh',
-              ),
-              _InfoCard(
-                emoji: '📱',
-                title: 'Course',
-                subtitle: 'CS361 — Mobile App Development',
-              ),
-              _InfoCard(
-                emoji: '📅',
-                title: 'Semester',
-                subtitle: 'Spring 2026',
-              ),
-            ],
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -228,15 +285,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
+// ── Section header ──
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final bool isDark;
+  const _SectionHeader({required this.title, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        title,
+        style: GoogleFonts.poppins(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: isDark ? Colors.white70 : AppConstants.textPrimary,
+        ),
+      ),
+    );
+  }
+}
+
+// ── Stat card ──
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+  final bool isDark;
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.isDark,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        decoration: BoxDecoration(
+          color: isDark ? AppConstants.darkCard : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.1),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: GoogleFonts.poppins(
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white54 : AppConstants.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Info card ──
 class _InfoCard extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
   final String title;
   final String subtitle;
+  final bool isDark;
 
   const _InfoCard({
-    required this.emoji,
+    required this.icon,
     required this.title,
     required this.subtitle,
+    required this.isDark,
   });
 
   @override
@@ -244,15 +383,17 @@ class _InfoCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? AppConstants.darkCard : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppConstants.primaryColor.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: AppConstants.primaryColor.withValues(alpha: 0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 3),
+                ),
+              ],
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
@@ -264,7 +405,7 @@ class _InfoCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Center(
-            child: Text(emoji, style: const TextStyle(fontSize: 20)),
+            child: Icon(icon, size: 22, color: AppConstants.primaryColor),
           ),
         ),
         title: Text(
@@ -272,14 +413,14 @@ class _InfoCard extends StatelessWidget {
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 14,
-            color: AppConstants.textPrimary,
+            color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: GoogleFonts.poppins(
             fontSize: 13,
-            color: AppConstants.textSecondary,
+            color: isDark ? Colors.white54 : AppConstants.textSecondary,
           ),
         ),
       ),

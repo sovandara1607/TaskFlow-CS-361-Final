@@ -3,12 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_provider.dart';
+import '../services/app_settings_provider.dart';
+import '../l10n/app_localizations.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/app_dialogs.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
 
-/// Add Task Screen — Tiimo‑style form to create a new task (POST to API).
+/// Add Task Screen — Tiimo‑style form with category selector.
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
 
@@ -21,6 +23,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final _titleCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
   String _status = 'pending';
+  String _category = 'general';
   DateTime? _dueDate;
   bool _isSaving = false;
 
@@ -68,6 +71,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       title: _titleCtrl.text.trim(),
       description: _descCtrl.text.trim(),
       status: _status,
+      category: _category,
       dueDate: _dueDate != null
           ? '${_dueDate!.year}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}'
           : null,
@@ -92,46 +96,89 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
+  InputDecoration _fieldDecoration(String label, IconData icon, bool isDark) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: GoogleFonts.poppins(
+        color: isDark ? Colors.white54 : AppConstants.textSecondary,
+      ),
+      prefixIcon: Icon(icon, color: AppConstants.primaryColor),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          color: AppConstants.primaryLight.withValues(alpha: 0.3),
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(
+          color: isDark
+              ? Colors.white12
+              : AppConstants.primaryLight.withValues(alpha: 0.3),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(
+          color: AppConstants.primaryColor,
+          width: 2,
+        ),
+      ),
+      filled: true,
+      fillColor: isDark ? AppConstants.darkCard : AppConstants.backgroundColor,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final lang = context.watch<AppSettingsProvider>().locale;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Add Task',
+          AppLocalizations.tr('add_task', lang),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w700,
-            color: AppConstants.textPrimary,
+            color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppConstants.defaultPadding),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppConstants.defaultPadding,
+          vertical: 12,
+        ),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ── Emoji header ──
+              // ── Icon header ──
               Center(
                 child: Container(
-                  width: 64,
-                  height: 64,
+                  width: 56,
+                  height: 56,
                   decoration: BoxDecoration(
                     color: AppConstants.accentLavender.withValues(alpha: 0.4),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Center(
-                    child: Text('📝', style: TextStyle(fontSize: 30)),
+                    child: Icon(
+                      Icons.edit_note_rounded,
+                      size: 28,
+                      color: AppConstants.primaryColor,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
 
               // ── Task Title ──
               CustomTextField(
                 controller: _titleCtrl,
-                label: 'Task Title',
-                hint: 'Enter task title',
+                label: AppLocalizations.tr('task_title', lang),
+                hint: AppLocalizations.tr('enter_title', lang),
                 prefixIcon: Icons.title_rounded,
                 validator: Validators.minLength3,
               ),
@@ -139,8 +186,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               // ── Description ──
               CustomTextField(
                 controller: _descCtrl,
-                label: 'Description',
-                hint: 'Enter task description',
+                label: AppLocalizations.tr('description', lang),
+                hint: AppLocalizations.tr('enter_description', lang),
                 prefixIcon: Icons.description_rounded,
                 maxLines: 3,
                 validator: Validators.required,
@@ -153,45 +200,112 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   onTap: _pickDate,
                   borderRadius: BorderRadius.circular(16),
                   child: InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: 'Due Date',
-                      labelStyle: GoogleFonts.poppins(
-                        color: AppConstants.textSecondary,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.calendar_today_rounded,
-                        color: AppConstants.primaryColor,
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                          color: AppConstants.primaryLight.withValues(
-                            alpha: 0.3,
-                          ),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide(
-                          color: AppConstants.primaryLight.withValues(
-                            alpha: 0.3,
-                          ),
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: AppConstants.backgroundColor,
+                    decoration: _fieldDecoration(
+                      AppLocalizations.tr('due_date', lang),
+                      Icons.calendar_today_rounded,
+                      isDark,
                     ),
                     child: Text(
                       _dueDate != null
                           ? '${_dueDate!.year}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}'
-                          : 'Select due date',
+                          : AppLocalizations.tr('select_date', lang),
                       style: GoogleFonts.poppins(
                         color: _dueDate != null
-                            ? AppConstants.textPrimary
-                            : AppConstants.textLight,
+                            ? (isDark ? Colors.white : AppConstants.textPrimary)
+                            : (isDark
+                                  ? Colors.white38
+                                  : AppConstants.textLight),
                       ),
                     ),
                   ),
+                ),
+              ),
+
+              // ── Category selector ──
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4, bottom: 8),
+                      child: Text(
+                        AppLocalizations.tr('category', lang),
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? Colors.white70
+                              : AppConstants.textSecondary,
+                        ),
+                      ),
+                    ),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: AppConstants.categories.map((cat) {
+                        final selected = _category == cat;
+                        return GestureDetector(
+                          onTap: () => setState(() => _category = cat),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: selected
+                                  ? AppConstants.categoryColor(
+                                      cat,
+                                    ).withValues(alpha: 0.2)
+                                  : (isDark
+                                        ? AppConstants.darkCard
+                                        : Colors.white),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: selected
+                                    ? AppConstants.categoryColor(cat)
+                                    : (isDark
+                                          ? Colors.white12
+                                          : AppConstants.primaryLight
+                                                .withValues(alpha: 0.3)),
+                                width: selected ? 2 : 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  AppConstants.categoryIcon(cat),
+                                  size: 16,
+                                  color: selected
+                                      ? AppConstants.categoryColor(cat)
+                                      : (isDark
+                                            ? Colors.white54
+                                            : AppConstants.textSecondary),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  AppConstants.categoryLabel(cat),
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: selected
+                                        ? FontWeight.w600
+                                        : FontWeight.w400,
+                                    color: selected
+                                        ? AppConstants.categoryColor(cat)
+                                        : (isDark
+                                              ? Colors.white70
+                                              : AppConstants.textPrimary),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ),
               ),
 
@@ -199,34 +313,16 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 28),
                 child: DropdownButtonFormField<String>(
-                  initialValue: _status,
+                  value: _status,
                   style: GoogleFonts.poppins(
-                    color: AppConstants.textPrimary,
+                    color: isDark ? Colors.white : AppConstants.textPrimary,
                     fontSize: 14,
                   ),
-                  decoration: InputDecoration(
-                    labelText: 'Status',
-                    labelStyle: GoogleFonts.poppins(
-                      color: AppConstants.textSecondary,
-                    ),
-                    prefixIcon: const Icon(
-                      Icons.flag_rounded,
-                      color: AppConstants.primaryColor,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(
-                        color: AppConstants.primaryLight.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide(
-                        color: AppConstants.primaryLight.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: AppConstants.backgroundColor,
+                  dropdownColor: isDark ? AppConstants.darkCard : Colors.white,
+                  decoration: _fieldDecoration(
+                    AppLocalizations.tr('status', lang),
+                    Icons.flag_rounded,
+                    isDark,
                   ),
                   items: _statuses.entries.map((e) {
                     return DropdownMenuItem(value: e.key, child: Text(e.value));
@@ -250,7 +346,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         )
                       : const Icon(Icons.add_task_rounded),
                   label: Text(
-                    _isSaving ? 'Saving…' : 'Create Task',
+                    _isSaving
+                        ? AppLocalizations.tr('saving', lang)
+                        : AppLocalizations.tr('create_task', lang),
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 16,
@@ -267,9 +365,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 child: TextButton(
                   onPressed: () => Navigator.pop(context),
                   child: Text(
-                    'Cancel',
+                    AppLocalizations.tr('cancel', lang),
                     style: GoogleFonts.poppins(
-                      color: AppConstants.textSecondary,
+                      color: isDark
+                          ? Colors.white54
+                          : AppConstants.textSecondary,
                     ),
                   ),
                 ),

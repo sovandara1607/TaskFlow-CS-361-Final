@@ -69,6 +69,13 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
+  // ── TOGGLE STATUS (for swipe-to-complete) ──
+  Future<bool> toggleTaskStatus(Task task) async {
+    final newStatus = task.status == 'completed' ? 'pending' : 'completed';
+    final updated = task.copyWith(status: newStatus);
+    return updateTask(updated);
+  }
+
   // ── DELETE ──
   Future<bool> deleteTask(int id) async {
     try {

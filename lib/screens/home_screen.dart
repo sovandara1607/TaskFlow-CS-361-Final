@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_provider.dart';
+import '../services/app_settings_provider.dart';
+import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
 
@@ -26,11 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  String _greeting() {
+  String _greeting(String lang) {
     final h = DateTime.now().hour;
-    if (h < 12) return 'Good Morning';
-    if (h < 17) return 'Good Afternoon';
-    return 'Good Evening';
+    if (h < 12) return AppLocalizations.tr('good_morning', lang);
+    if (h < 17) return AppLocalizations.tr('good_afternoon', lang);
+    return AppLocalizations.tr('good_evening', lang);
   }
 
   static const _weekdays = [
@@ -62,18 +64,26 @@ class _HomeScreenState extends State<HomeScreen> {
     final now = DateTime.now();
     final dayName = _weekdays[now.weekday - 1];
     final monthName = _months[now.month - 1];
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final settings = context.watch<AppSettingsProvider>();
+    final lang = settings.locale;
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('✓ ', style: TextStyle(fontSize: 20)),
+            Icon(
+              Icons.check_circle_rounded,
+              size: 22,
+              color: AppConstants.primaryColor,
+            ),
+            const SizedBox(width: 6),
             Text(
               AppConstants.appName,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w700,
-                color: AppConstants.textPrimary,
+                color: isDark ? Colors.white : AppConstants.textPrimary,
               ),
             ),
           ],
@@ -81,11 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none_rounded),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No new notifications')),
-              );
-            },
+            onPressed: () => Navigator.pushNamed(context, '/notifications'),
           ),
         ],
       ),
@@ -109,14 +115,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: GoogleFonts.poppins(
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
-                        color: AppConstants.textPrimary,
+                        color: isDark ? Colors.white : AppConstants.textPrimary,
                       ),
                     ),
                     Text(
                       '$monthName ${now.day}, ${now.year}',
                       style: GoogleFonts.poppins(
                         fontSize: 15,
-                        color: AppConstants.textSecondary,
+                        color: isDark
+                            ? Colors.white54
+                            : AppConstants.textSecondary,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -154,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${_greeting()}, Dara! 👋',
+                        '${_greeting(lang)}, ${settings.userName.split(' ').first}!',
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -163,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'What\'s your plan today?',
+                        AppLocalizations.tr('whats_your_plan', lang),
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: Colors.white70,
@@ -175,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.add_rounded, size: 20),
                           label: Text(
-                            'New Task',
+                            AppLocalizations.tr('new_task', lang),
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w600,
                             ),
@@ -199,34 +207,38 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Consumer<TaskProvider>(
-                  builder: (_, provider, _) => Row(
+                  builder: (_, provider, __) => Row(
                     children: [
                       _StatBubble(
-                        emoji: '📋',
+                        icon: Icons.assignment_outlined,
                         value: '${provider.totalTasks}',
-                        label: 'Total',
+                        label: AppLocalizations.tr('total', lang),
                         color: AppConstants.accentLavender,
+                        isDark: isDark,
                       ),
                       const SizedBox(width: 10),
                       _StatBubble(
-                        emoji: '⏳',
+                        icon: Icons.pending_actions_rounded,
                         value: '${provider.pendingTasks}',
-                        label: 'Pending',
+                        label: AppLocalizations.tr('pending', lang),
                         color: AppConstants.accentPeach,
+                        isDark: isDark,
                       ),
                       const SizedBox(width: 10),
                       _StatBubble(
-                        emoji: '🔄',
+                        icon: Icons.sync_rounded,
                         value: '${provider.inProgressTasks}',
-                        label: 'Active',
+                        label: AppLocalizations.tr('active', lang),
                         color: AppConstants.accentSky,
+                        isDark: isDark,
                       ),
                       const SizedBox(width: 10),
                       _StatBubble(
-                        emoji: '✅',
+                        icon: Icons.check_circle_outline_rounded,
                         value: '${provider.completedTasks}',
-                        label: 'Done',
+                        label: AppLocalizations.tr('done', lang),
                         color: AppConstants.accentMint,
+                        isDark: isDark,
                       ),
                     ],
                   ),
@@ -236,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // ── Task sections ──
               Consumer<TaskProvider>(
-                builder: (_, provider, _) {
+                builder: (_, provider, __) {
                   if (provider.isLoading && provider.tasks.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.only(top: 60),
@@ -249,22 +261,32 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Center(
                         child: Column(
                           children: [
-                            Text('🌤️', style: const TextStyle(fontSize: 48)),
+                            Icon(
+                              Icons.wb_sunny_outlined,
+                              size: 48,
+                              color: isDark
+                                  ? Colors.white38
+                                  : AppConstants.textLight,
+                            ),
                             const SizedBox(height: 12),
                             Text(
-                              'No tasks yet',
+                              AppLocalizations.tr('no_tasks_yet', lang),
                               style: GoogleFonts.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: AppConstants.textPrimary,
+                                color: isDark
+                                    ? Colors.white
+                                    : AppConstants.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Tap + to create your first task',
+                              AppLocalizations.tr('tap_to_create', lang),
                               style: GoogleFonts.poppins(
                                 fontSize: 13,
-                                color: AppConstants.textSecondary,
+                                color: isDark
+                                    ? Colors.white54
+                                    : AppConstants.textSecondary,
                               ),
                             ),
                           ],
@@ -288,34 +310,58 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       if (pending.isNotEmpty) ...[
                         _SectionHeader(
-                          emoji: '📋',
-                          title: 'PENDING',
+                          icon: Icons.radio_button_unchecked,
+                          title: AppLocalizations.tr(
+                            'pending',
+                            lang,
+                          ).toUpperCase(),
                           count: pending.length,
+                          isDark: isDark,
                         ),
                         ...pending.map(
-                          (t) => _MiniTaskTile(task: t, context: context),
+                          (t) => _MiniTaskTile(
+                            task: t,
+                            parentContext: context,
+                            isDark: isDark,
+                          ),
                         ),
                         const SizedBox(height: 16),
                       ],
                       if (inProgress.isNotEmpty) ...[
                         _SectionHeader(
-                          emoji: '⏳',
-                          title: 'IN PROGRESS',
+                          icon: Icons.timelapse_rounded,
+                          title: AppLocalizations.tr(
+                            'in_progress',
+                            lang,
+                          ).toUpperCase(),
                           count: inProgress.length,
+                          isDark: isDark,
                         ),
                         ...inProgress.map(
-                          (t) => _MiniTaskTile(task: t, context: context),
+                          (t) => _MiniTaskTile(
+                            task: t,
+                            parentContext: context,
+                            isDark: isDark,
+                          ),
                         ),
                         const SizedBox(height: 16),
                       ],
                       if (completed.isNotEmpty) ...[
                         _SectionHeader(
-                          emoji: '✅',
-                          title: 'COMPLETED',
+                          icon: Icons.check_circle_rounded,
+                          title: AppLocalizations.tr(
+                            'completed',
+                            lang,
+                          ).toUpperCase(),
                           count: completed.length,
+                          isDark: isDark,
                         ),
                         ...completed.map(
-                          (t) => _MiniTaskTile(task: t, context: context),
+                          (t) => _MiniTaskTile(
+                            task: t,
+                            parentContext: context,
+                            isDark: isDark,
+                          ),
                         ),
                       ],
                       const SizedBox(height: 32),
@@ -333,16 +379,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // ── Stat bubble ──
 class _StatBubble extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
   final String value;
   final String label;
   final Color color;
+  final bool isDark;
 
   const _StatBubble({
-    required this.emoji,
+    required this.icon,
     required this.value,
     required this.label,
     required this.color,
+    required this.isDark,
   });
 
   @override
@@ -351,26 +399,32 @@ class _StatBubble extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.35),
+          color: isDark
+              ? color.withValues(alpha: 0.15)
+              : color.withValues(alpha: 0.35),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 20)),
+            Icon(
+              icon,
+              size: 22,
+              color: isDark ? Colors.white70 : AppConstants.textPrimary,
+            ),
             const SizedBox(height: 4),
             Text(
               value,
               style: GoogleFonts.poppins(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: AppConstants.textPrimary,
+                color: isDark ? Colors.white : AppConstants.textPrimary,
               ),
             ),
             Text(
               label,
               style: GoogleFonts.poppins(
                 fontSize: 11,
-                color: AppConstants.textSecondary,
+                color: isDark ? Colors.white54 : AppConstants.textSecondary,
               ),
             ),
           ],
@@ -380,16 +434,18 @@ class _StatBubble extends StatelessWidget {
   }
 }
 
-// ── Section header (like Tiimo's MORNING / AFTERNOON) ──
+// ── Section header ──
 class _SectionHeader extends StatelessWidget {
-  final String emoji;
+  final IconData icon;
   final String title;
   final int count;
+  final bool isDark;
 
   const _SectionHeader({
-    required this.emoji,
+    required this.icon,
     required this.title,
     required this.count,
+    required this.isDark,
   });
 
   @override
@@ -398,14 +454,18 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
       child: Row(
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 14)),
+          Icon(
+            icon,
+            size: 16,
+            color: isDark ? Colors.white54 : AppConstants.textSecondary,
+          ),
           const SizedBox(width: 6),
           Text(
             title,
             style: GoogleFonts.poppins(
               fontSize: 12,
               fontWeight: FontWeight.w700,
-              color: AppConstants.textSecondary,
+              color: isDark ? Colors.white54 : AppConstants.textSecondary,
               letterSpacing: 1.2,
             ),
           ),
@@ -431,12 +491,17 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ── Mini task tile for the home screen ──
+// ── Mini task tile for the home screen with swipe gestures ──
 class _MiniTaskTile extends StatelessWidget {
   final Task task;
-  final BuildContext context;
+  final BuildContext parentContext;
+  final bool isDark;
 
-  const _MiniTaskTile({required this.task, required this.context});
+  const _MiniTaskTile({
+    required this.task,
+    required this.parentContext,
+    required this.isDark,
+  });
 
   String _shortDate(String? raw) {
     if (raw == null) return '';
@@ -463,97 +528,206 @@ class _MiniTaskTile extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     final isCompleted = task.status == 'completed';
     final bgColor = AppConstants.statusBgColor(task.status);
+    final provider = context.read<TaskProvider>();
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppConstants.primaryColor.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
+    return Dismissible(
+      key: ValueKey('home_task_${task.id}'),
+      // Swipe right to complete
+      background: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        decoration: BoxDecoration(
+          color: AppConstants.successColor,
           borderRadius: BorderRadius.circular(16),
-          onTap: () => Navigator.pushNamed(context, '/edit', arguments: task),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            child: Row(
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: bgColor.withValues(alpha: 0.45),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      AppConstants.statusEmoji(task.status),
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ),
+        ),
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20),
+        child: const Row(
+          children: [
+            Icon(Icons.check_circle_rounded, color: Colors.white),
+            SizedBox(width: 8),
+            Text(
+              'Complete',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
+        ),
+      ),
+      // Swipe left to delete
+      secondaryBackground: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        decoration: BoxDecoration(
+          color: AppConstants.errorColor,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.delete_rounded, color: Colors.white),
+          ],
+        ),
+      ),
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.startToEnd) {
+          // Complete
+          await provider.toggleTaskStatus(task);
+          return false; // Don't remove from list, just update
+        } else {
+          // Delete - show confirmation
+          final confirmed = await showDialog<bool>(
+            context: parentContext,
+            builder: (ctx) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: const Text('Delete Task'),
+              content: Text('Delete "${task.title}"?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx, false),
+                  child: const Text('Cancel'),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        task.title,
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppConstants.textPrimary,
-                          decoration: isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          decorationColor: AppConstants.textSecondary,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (task.dueDate != null)
-                        Text(
-                          _shortDate(task.dueDate),
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            color: AppConstants.textSecondary,
-                          ),
-                        ),
-                    ],
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppConstants.errorColor,
+                    foregroundColor: Colors.white,
                   ),
-                ),
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: isCompleted
-                        ? AppConstants.successColor
-                        : Colors.transparent,
-                    border: Border.all(
-                      color: isCompleted
-                          ? AppConstants.successColor
-                          : AppConstants.textLight,
-                      width: 2,
-                    ),
-                  ),
-                  child: isCompleted
-                      ? const Icon(Icons.check, color: Colors.white, size: 14)
-                      : null,
+                  onPressed: () => Navigator.pop(ctx, true),
+                  child: const Text('Delete'),
                 ),
               ],
+            ),
+          );
+          if (confirmed == true) {
+            await provider.deleteTask(task.id!);
+            return false;
+          }
+          return false;
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        decoration: BoxDecoration(
+          color: isCompleted
+              ? (isDark
+                    ? AppConstants.accentMint.withValues(alpha: 0.08)
+                    : AppConstants.accentMint.withValues(alpha: 0.1))
+              : (isDark ? AppConstants.darkCard : Colors.white),
+          borderRadius: BorderRadius.circular(16),
+          border: isCompleted
+              ? Border.all(
+                  color: AppConstants.successColor.withValues(alpha: 0.25),
+                  width: 1,
+                )
+              : null,
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                    color: AppConstants.primaryColor.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () =>
+                Navigator.pushNamed(parentContext, '/edit', arguments: task),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: bgColor.withValues(alpha: 0.45),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        AppConstants.statusIcon(task.status),
+                        size: 20,
+                        color: AppConstants.statusColor(task.status),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          task.title,
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: isCompleted
+                                ? (isDark
+                                      ? Colors.white54
+                                      : AppConstants.textSecondary)
+                                : (isDark
+                                      ? Colors.white
+                                      : AppConstants.textPrimary),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (task.dueDate != null)
+                          Text(
+                            _shortDate(task.dueDate),
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: isDark
+                                  ? Colors.white38
+                                  : AppConstants.textSecondary,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isCompleted
+                          ? AppConstants.successColor
+                          : Colors.transparent,
+                      border: Border.all(
+                        color: isCompleted
+                            ? AppConstants.successColor
+                            : (isDark
+                                  ? Colors.white24
+                                  : AppConstants.textLight),
+                        width: 2,
+                      ),
+                    ),
+                    child: isCompleted
+                        ? const Icon(Icons.check, color: Colors.white, size: 14)
+                        : null,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

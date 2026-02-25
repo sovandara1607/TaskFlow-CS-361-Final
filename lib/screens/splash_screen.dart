@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_provider.dart';
+import '../services/api_service.dart';
 import '../utils/constants.dart';
 
 /// Tiimo‑style splash screen with gradient and animated logo.
@@ -30,11 +33,26 @@ class _SplashScreenState extends State<SplashScreen>
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut));
     _ctrl.forward();
 
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      if (mounted) {
-        Navigator.pushReplacementNamed(context, '/');
-      }
-    });
+    _checkAuthAndNavigate();
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait for animation to play
+    await Future.delayed(const Duration(milliseconds: 2500));
+    if (!mounted) return;
+
+    final auth = context.read<AuthProvider>();
+    final isLoggedIn = await auth.tryAutoLogin();
+
+    if (!mounted) return;
+
+    if (isLoggedIn) {
+      // Set token for API calls
+      ApiService.setToken(auth.token);
+      Navigator.pushReplacementNamed(context, '/');
+    } else {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
   }
 
   @override
@@ -79,7 +97,11 @@ class _SplashScreenState extends State<SplashScreen>
                     ],
                   ),
                   child: const Center(
-                    child: Text('✓', style: TextStyle(fontSize: 48)),
+                    child: Icon(
+                      Icons.check_rounded,
+                      size: 52,
+                      color: AppConstants.primaryColor,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 28),

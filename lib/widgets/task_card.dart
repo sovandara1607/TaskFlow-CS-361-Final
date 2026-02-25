@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../models/task.dart';
 import '../utils/constants.dart';
 
-/// Tiimo‑style minimal task card.
+/// Tiimo‑style minimal task card with modern completion indicator.
 class TaskCard extends StatelessWidget {
   final Task task;
   final VoidCallback? onTap;
@@ -39,7 +39,6 @@ class TaskCard extends StatelessWidget {
       ];
       return '${months[d.month - 1]} ${d.day}';
     } catch (_) {
-      // Fallback: return first 10 chars at most
       return raw.length > 10 ? raw.substring(0, 10) : raw;
     }
   }
@@ -47,21 +46,36 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bgColor = AppConstants.statusBgColor(task.status);
-    final emoji = AppConstants.statusEmoji(task.status);
+    final statusIconData = AppConstants.statusIcon(task.status);
     final isCompleted = task.status == 'completed';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final catColor = AppConstants.categoryColor(task.category);
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isCompleted
+            ? (isDark
+                  ? AppConstants.accentMint.withValues(alpha: 0.1)
+                  : AppConstants.accentMint.withValues(alpha: 0.12))
+            : (isDark ? AppConstants.darkCard : Colors.white),
         borderRadius: BorderRadius.circular(AppConstants.cardRadius),
-        boxShadow: [
-          BoxShadow(
-            color: AppConstants.primaryColor.withValues(alpha: 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: isCompleted
+            ? Border.all(
+                color: AppConstants.successColor.withValues(alpha: 0.3),
+                width: 1.5,
+              )
+            : null,
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: AppConstants.primaryColor.withValues(alpha: 0.06),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -73,7 +87,7 @@ class TaskCard extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                // ── Emoji bubble ──
+                // ── Icon bubble ──
                 Container(
                   width: 48,
                   height: 48,
@@ -82,7 +96,11 @@ class TaskCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                   ),
                   child: Center(
-                    child: Text(emoji, style: const TextStyle(fontSize: 22)),
+                    child: Icon(
+                      statusIconData,
+                      size: 24,
+                      color: AppConstants.statusColor(task.status),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -96,11 +114,13 @@ class TaskCard extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: AppConstants.textPrimary,
-                          decoration: isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          decorationColor: AppConstants.textSecondary,
+                          color: isCompleted
+                              ? (isDark
+                                    ? Colors.white54
+                                    : AppConstants.textSecondary)
+                              : (isDark
+                                    ? Colors.white
+                                    : AppConstants.textPrimary),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -114,7 +134,9 @@ class TaskCard extends StatelessWidget {
                               size: 13,
                               color: task.isOverdue
                                   ? AppConstants.errorColor
-                                  : AppConstants.textSecondary,
+                                  : (isDark
+                                        ? Colors.white38
+                                        : AppConstants.textSecondary),
                             ),
                             const SizedBox(width: 3),
                             Text(
@@ -123,14 +145,17 @@ class TaskCard extends StatelessWidget {
                                 fontSize: 12,
                                 color: task.isOverdue
                                     ? AppConstants.errorColor
-                                    : AppConstants.textSecondary,
+                                    : (isDark
+                                          ? Colors.white38
+                                          : AppConstants.textSecondary),
                                 fontWeight: task.isOverdue
                                     ? FontWeight.w600
                                     : FontWeight.w400,
                               ),
                             ),
-                            const SizedBox(width: 10),
+                            const SizedBox(width: 8),
                           ],
+                          // ── Status badge ──
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,
@@ -149,13 +174,30 @@ class TaskCard extends StatelessWidget {
                               ),
                             ),
                           ),
+                          const SizedBox(width: 6),
+                          // ── Category badge ──
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: catColor.withValues(alpha: 0.35),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Icon(
+                              AppConstants.categoryIcon(task.category),
+                              size: 12,
+                              color: catColor,
+                            ),
+                          ),
                         ],
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 8),
-                // ── Circle checkbox ──
+                // ── Circle checkbox indicator ──
                 Container(
                   width: 28,
                   height: 28,
@@ -167,7 +209,7 @@ class TaskCard extends StatelessWidget {
                     border: Border.all(
                       color: isCompleted
                           ? AppConstants.successColor
-                          : AppConstants.textLight,
+                          : (isDark ? Colors.white24 : AppConstants.textLight),
                       width: 2,
                     ),
                   ),

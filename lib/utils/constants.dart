@@ -12,6 +12,11 @@ class AppConstants {
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color cardColor = Color(0xFFFFFFFF);
 
+  // ── Dark mode backgrounds ──
+  static const Color darkBackground = Color(0xFF1A1A2E);
+  static const Color darkSurface = Color(0xFF232340);
+  static const Color darkCard = Color(0xFF2A2A4A);
+
   // ── Pastel accents ──
   static const Color accentPink = Color(0xFFF0C6DB);
   static const Color accentMint = Color(0xFFA8E6CF);
@@ -36,18 +41,6 @@ class AppConstants {
   static const double defaultPadding = 20.0;
   static const double cardRadius = 20.0;
   static const double defaultRadius = 16.0;
-
-  // ── Status emoji ──
-  static String statusEmoji(String status) {
-    switch (status) {
-      case 'in_progress':
-        return '⏳';
-      case 'completed':
-        return '✅';
-      default:
-        return '📋';
-    }
-  }
 
   // ── Status colours ──
   static Color statusColor(String status) {
@@ -83,5 +76,72 @@ class AppConstants {
       default:
         return Icons.radio_button_unchecked;
     }
+  }
+
+  // ── Category helpers ──
+  static const List<String> categories = [
+    'general',
+    'school',
+    'work',
+    'home',
+    'personal',
+  ];
+
+  static IconData categoryIcon(String category) {
+    switch (category) {
+      case 'school':
+        return Icons.school_rounded;
+      case 'work':
+        return Icons.work_outline_rounded;
+      case 'home':
+        return Icons.home_outlined;
+      case 'personal':
+        return Icons.person_outline_rounded;
+      default:
+        return Icons.folder_outlined;
+    }
+  }
+
+  static Color categoryColor(String category) {
+    switch (category) {
+      case 'school':
+        return accentSky;
+      case 'work':
+        return accentPeach;
+      case 'home':
+        return accentMint;
+      case 'personal':
+        return accentPink;
+      default:
+        return accentLavender;
+    }
+  }
+
+  static String categoryLabel(String category) {
+    switch (category) {
+      case 'school':
+        return 'School';
+      case 'work':
+        return 'Work';
+      case 'home':
+        return 'Home';
+      case 'personal':
+        return 'Personal';
+      default:
+        return 'General';
+    }
+  }
+
+  /// Get card/surface color based on brightness
+  static Color cardColorFor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkCard
+        : cardColor;
+  }
+
+  static Color bgColorFor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkBackground
+        : backgroundColor;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import '../utils/constants.dart';
 
-/// A reusable styled text form field widget.
+/// A reusable styled text form field widget — dark mode aware.
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
@@ -25,6 +26,8 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: TextFormField(
@@ -33,13 +36,18 @@ class CustomTextField extends StatelessWidget {
         keyboardType: keyboardType,
         maxLines: maxLines,
         obscureText: obscureText,
+        style: TextStyle(
+          color: isDark ? Colors.white : AppConstants.textPrimary,
+        ),
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
           prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
           filled: true,
-          fillColor: Theme.of(context).colorScheme.surface,
+          fillColor: isDark
+              ? AppConstants.darkCard
+              : Theme.of(context).colorScheme.surface,
         ),
       ),
     );

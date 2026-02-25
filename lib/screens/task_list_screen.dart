@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_provider.dart';
+import '../services/app_settings_provider.dart';
+import '../l10n/app_localizations.dart';
 import '../widgets/task_card.dart';
 import '../widgets/app_dialogs.dart';
 import '../utils/constants.dart';
 
-/// Tiimo‑style Task List Screen — filter chips, clean list with Explore feel.
+/// Tiimo‑style Task List Screen — filter chips, swipe gestures, categories.
 class TaskListScreen extends StatefulWidget {
   const TaskListScreen({super.key});
 
@@ -16,7 +19,8 @@ class TaskListScreen extends StatefulWidget {
 }
 
 class _TaskListScreenState extends State<TaskListScreen> {
-  String _filter = 'all';
+  String _statusFilter = 'all';
+  String _categoryFilter = 'all';
   final _searchCtrl = TextEditingController();
   String _searchQuery = '';
 
@@ -39,8 +43,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   List<Task> _applyFilter(List<Task> tasks) {
     var result = tasks;
-    if (_filter != 'all') {
-      result = result.where((t) => t.status == _filter).toList();
+    if (_statusFilter != 'all') {
+      result = result.where((t) => t.status == _statusFilter).toList();
+    }
+    if (_categoryFilter != 'all') {
+      result = result.where((t) => t.category == _categoryFilter).toList();
     }
     if (_searchQuery.isNotEmpty) {
       final q = _searchQuery.toLowerCase();
@@ -79,7 +86,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
     }
   }
 
-  /// Format "2026-03-01" → "Mar 1"
   String _shortDate(String? raw) {
     if (raw == null) return '';
     try {
@@ -105,13 +111,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   void _showTaskDetails(Task task) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     AppDialogs.showBottomSheet(
       context: context,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Drag handle
           Center(
             child: Container(
               width: 40,
@@ -123,7 +129,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
               ),
             ),
           ),
-          // Emoji header
           Center(
             child: Container(
               width: 64,
@@ -135,9 +140,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 borderRadius: BorderRadius.circular(18),
               ),
               child: Center(
-                child: Text(
-                  AppConstants.statusEmoji(task.status),
-                  style: const TextStyle(fontSize: 30),
+                child: Icon(
+                  AppConstants.statusIcon(task.status),
+                  size: 30,
+                  color: AppConstants.statusColor(task.status),
                 ),
               ),
             ),
@@ -148,7 +154,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.w700,
-              color: AppConstants.textPrimary,
+              color: isDark ? Colors.white : AppConstants.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -171,6 +177,24 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: AppConstants.statusColor(task.status),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppConstants.categoryColor(
+                    task.category,
+                  ).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${AppConstants.categoryLabel(task.category)}',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppConstants.categoryColor(task.category),
                   ),
                 ),
               ),
@@ -199,7 +223,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 : 'No description provided.',
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: AppConstants.textSecondary,
+              color: isDark ? Colors.white54 : AppConstants.textSecondary,
               height: 1.5,
             ),
           ),
@@ -241,20 +265,23 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final lang = context.watch<AppSettingsProvider>().locale;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'My Tasks',
+          AppLocalizations.tr('my_tasks', lang),
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w700,
             fontSize: 20,
-            color: AppConstants.textPrimary,
+            color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
-            tooltip: 'Refresh',
+            tooltip: AppLocalizations.tr('refresh', lang),
             onPressed: () => context.read<TaskProvider>().fetchTasks(),
           ),
         ],
@@ -266,29 +293,36 @@ class _TaskListScreenState extends State<TaskListScreen> {
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? AppConstants.darkCard : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppConstants.primaryColor.withValues(alpha: 0.06),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+                boxShadow: isDark
+                    ? []
+                    : [
+                        BoxShadow(
+                          color: AppConstants.primaryColor.withValues(
+                            alpha: 0.06,
+                          ),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
               ),
               child: TextField(
                 controller: _searchCtrl,
                 onChanged: (v) => setState(() => _searchQuery = v),
-                style: GoogleFonts.poppins(fontSize: 14),
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  color: isDark ? Colors.white : AppConstants.textPrimary,
+                ),
                 decoration: InputDecoration(
-                  hintText: 'Search tasks…',
+                  hintText: AppLocalizations.tr('search_tasks', lang),
                   hintStyle: GoogleFonts.poppins(
-                    color: AppConstants.textLight,
+                    color: isDark ? Colors.white38 : AppConstants.textLight,
                     fontSize: 14,
                   ),
                   prefixIcon: Icon(
                     Icons.search_rounded,
-                    color: AppConstants.textSecondary,
+                    color: isDark ? Colors.white54 : AppConstants.textSecondary,
                   ),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
@@ -299,7 +333,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
           ),
 
-          // ── Filter chips ──
+          // ── Status filter chips ──
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: SingleChildScrollView(
@@ -307,31 +341,68 @@ class _TaskListScreenState extends State<TaskListScreen> {
               child: Row(
                 children: [
                   _FilterChip(
-                    label: 'All',
-                    emoji: '📝',
-                    selected: _filter == 'all',
-                    onTap: () => setState(() => _filter = 'all'),
+                    label: AppLocalizations.tr('all', lang),
+                    icon: Icons.list_alt_rounded,
+                    selected: _statusFilter == 'all',
+                    isDark: isDark,
+                    onTap: () => setState(() => _statusFilter = 'all'),
                   ),
                   const SizedBox(width: 8),
                   _FilterChip(
-                    label: 'Pending',
-                    emoji: '📋',
-                    selected: _filter == 'pending',
-                    onTap: () => setState(() => _filter = 'pending'),
+                    label: AppLocalizations.tr('pending', lang),
+                    icon: Icons.radio_button_unchecked,
+                    selected: _statusFilter == 'pending',
+                    isDark: isDark,
+                    onTap: () => setState(() => _statusFilter = 'pending'),
                   ),
                   const SizedBox(width: 8),
                   _FilterChip(
-                    label: 'In Progress',
-                    emoji: '⏳',
-                    selected: _filter == 'in_progress',
-                    onTap: () => setState(() => _filter = 'in_progress'),
+                    label: AppLocalizations.tr('in_progress', lang),
+                    icon: Icons.timelapse_rounded,
+                    selected: _statusFilter == 'in_progress',
+                    isDark: isDark,
+                    onTap: () => setState(() => _statusFilter = 'in_progress'),
                   ),
                   const SizedBox(width: 8),
                   _FilterChip(
-                    label: 'Completed',
-                    emoji: '✅',
-                    selected: _filter == 'completed',
-                    onTap: () => setState(() => _filter = 'completed'),
+                    label: AppLocalizations.tr('completed', lang),
+                    icon: Icons.check_circle_outline_rounded,
+                    selected: _statusFilter == 'completed',
+                    isDark: isDark,
+                    onTap: () => setState(() => _statusFilter = 'completed'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // ── Category filter chips ──
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _FilterChip(
+                    label: AppLocalizations.tr('all', lang),
+                    icon: Icons.category_outlined,
+                    selected: _categoryFilter == 'all',
+                    isDark: isDark,
+                    onTap: () => setState(() => _categoryFilter = 'all'),
+                  ),
+                  const SizedBox(width: 8),
+                  ...AppConstants.categories.map(
+                    (cat) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: _FilterChip(
+                        label: AppConstants.categoryLabel(cat),
+                        icon: AppConstants.categoryIcon(cat),
+                        selected: _categoryFilter == cat,
+                        isDark: isDark,
+                        onTap: () => setState(() => _categoryFilter = cat),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -339,10 +410,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
           ),
           const SizedBox(height: 12),
 
-          // ── Task list ──
+          // ── Task list with Slidable gestures ──
           Expanded(
             child: Consumer<TaskProvider>(
-              builder: (context, provider, _) {
+              builder: (context, provider, __) {
                 if (provider.isLoading && provider.tasks.isEmpty) {
                   return const Center(child: CircularProgressIndicator());
                 }
@@ -354,14 +425,20 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('☁️', style: TextStyle(fontSize: 48)),
+                          const Icon(
+                            Icons.cloud_off_rounded,
+                            size: 48,
+                            color: AppConstants.textLight,
+                          ),
                           const SizedBox(height: 16),
                           Text(
-                            'Could not load tasks',
+                            AppLocalizations.tr('could_not_load', lang),
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: AppConstants.textPrimary,
+                              color: isDark
+                                  ? Colors.white
+                                  : AppConstants.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -370,13 +447,15 @@ class _TaskListScreenState extends State<TaskListScreen> {
                             textAlign: TextAlign.center,
                             style: GoogleFonts.poppins(
                               fontSize: 13,
-                              color: AppConstants.textSecondary,
+                              color: isDark
+                                  ? Colors.white54
+                                  : AppConstants.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
                             icon: const Icon(Icons.refresh_rounded),
-                            label: const Text('Retry'),
+                            label: Text(AppLocalizations.tr('retry', lang)),
                             onPressed: () => provider.fetchTasks(),
                           ),
                         ],
@@ -392,23 +471,33 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('🔍', style: TextStyle(fontSize: 48)),
+                        Icon(
+                          Icons.search_off_rounded,
+                          size: 48,
+                          color: isDark
+                              ? Colors.white38
+                              : AppConstants.textLight,
+                        ),
                         const SizedBox(height: 16),
                         Text(
                           provider.tasks.isEmpty
-                              ? 'No tasks yet'
-                              : 'No matching tasks',
+                              ? AppLocalizations.tr('no_tasks_yet', lang)
+                              : AppLocalizations.tr('no_matching', lang),
                           style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: AppConstants.textPrimary,
+                            color: isDark
+                                ? Colors.white
+                                : AppConstants.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 8),
                         if (provider.tasks.isEmpty)
                           ElevatedButton.icon(
                             icon: const Icon(Icons.add_rounded),
-                            label: const Text('Create Your First Task'),
+                            label: Text(
+                              AppLocalizations.tr('create_first', lang),
+                            ),
                             onPressed: () =>
                                 Navigator.pushNamed(context, '/add'),
                           ),
@@ -425,15 +514,56 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
                       final task = filtered[index];
-                      return TaskCard(
-                        task: task,
-                        onTap: () => _showTaskDetails(task),
-                        onEdit: () => Navigator.pushNamed(
-                          context,
-                          '/edit',
-                          arguments: task,
+                      return Slidable(
+                        key: ValueKey('slidable_${task.id}'),
+                        // Swipe right → toggle complete
+                        startActionPane: ActionPane(
+                          motion: const BehindMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (_) => provider.toggleTaskStatus(task),
+                              backgroundColor: AppConstants.successColor,
+                              foregroundColor: Colors.white,
+                              icon: task.status == 'completed'
+                                  ? Icons.undo_rounded
+                                  : Icons.check_circle_rounded,
+                              label: task.status == 'completed'
+                                  ? 'Undo'
+                                  : 'Complete',
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                bottomLeft: Radius.circular(16),
+                              ),
+                            ),
+                          ],
                         ),
-                        onDelete: () => _deleteTask(task),
+                        // Swipe left → delete
+                        endActionPane: ActionPane(
+                          motion: const BehindMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (_) => _deleteTask(task),
+                              backgroundColor: AppConstants.errorColor,
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete_rounded,
+                              label: 'Delete',
+                              borderRadius: const BorderRadius.only(
+                                topRight: Radius.circular(16),
+                                bottomRight: Radius.circular(16),
+                              ),
+                            ),
+                          ],
+                        ),
+                        child: TaskCard(
+                          task: task,
+                          onTap: () => _showTaskDetails(task),
+                          onEdit: () => Navigator.pushNamed(
+                            context,
+                            '/edit',
+                            arguments: task,
+                          ),
+                          onDelete: () => _deleteTask(task),
+                        ),
                       );
                     },
                   ),
@@ -448,7 +578,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
         heroTag: 'add_task_fab',
         icon: const Icon(Icons.add_rounded),
         label: Text(
-          'New Task',
+          AppLocalizations.tr('new_task', lang),
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
         ),
         onPressed: () => Navigator.pushNamed(context, '/add'),
@@ -460,14 +590,16 @@ class _TaskListScreenState extends State<TaskListScreen> {
 // ── Custom filter chip ──
 class _FilterChip extends StatelessWidget {
   final String label;
-  final String emoji;
+  final IconData icon;
   final bool selected;
+  final bool isDark;
   final VoidCallback onTap;
 
   const _FilterChip({
     required this.label,
-    required this.emoji,
+    required this.icon,
     required this.selected,
+    required this.isDark,
     required this.onTap,
   });
 
@@ -479,7 +611,9 @@ class _FilterChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? AppConstants.primaryColor : Colors.white,
+          color: selected
+              ? AppConstants.primaryColor
+              : (isDark ? AppConstants.darkCard : Colors.white),
           borderRadius: BorderRadius.circular(12),
           boxShadow: selected
               ? [
@@ -489,6 +623,8 @@ class _FilterChip extends StatelessWidget {
                     offset: const Offset(0, 3),
                   ),
                 ]
+              : isDark
+              ? []
               : [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.04),
@@ -500,14 +636,22 @@ class _FilterChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 14)),
+            Icon(
+              icon,
+              size: 16,
+              color: selected
+                  ? Colors.white
+                  : (isDark ? Colors.white54 : AppConstants.textSecondary),
+            ),
             const SizedBox(width: 6),
             Text(
               label,
               style: GoogleFonts.poppins(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: selected ? Colors.white : AppConstants.textPrimary,
+                color: selected
+                    ? Colors.white
+                    : (isDark ? Colors.white70 : AppConstants.textPrimary),
               ),
             ),
           ],

@@ -11,11 +11,14 @@ class TaskController extends Controller
 {
    /**
     * GET /api/tasks
-    * Retrieve all tasks ordered by newest first.
+    * Retrieve the authenticated user's tasks.
     */
-   public function index(): JsonResponse
+   public function index(Request $request): JsonResponse
    {
-      $tasks = Task::orderBy('created_at', 'desc')->get();
+      $tasks = $request->user()
+         ->tasks()
+         ->orderBy('created_at', 'desc')
+         ->get();
 
       return response()->json([
          'success' => true,
@@ -26,7 +29,6 @@ class TaskController extends Controller
 
    /**
     * POST /api/tasks
-    * Create a new task.
     */
    public function store(Request $request): JsonResponse
    {
@@ -35,13 +37,15 @@ class TaskController extends Controller
          'description' => 'nullable|string',
          'status'      => 'nullable|string|in:pending,in_progress,completed',
          'due_date'    => 'nullable|date',
+         'category'    => 'nullable|string|in:general,school,work,home,personal',
       ]);
 
-      $task = Task::create([
+      $task = $request->user()->tasks()->create([
          'title'       => $validated['title'],
          'description' => $validated['description'] ?? '',
          'status'      => $validated['status'] ?? 'pending',
          'due_date'    => $validated['due_date'] ?? null,
+         'category'    => $validated['category'] ?? 'general',
       ]);
 
       return response()->json([
@@ -53,11 +57,10 @@ class TaskController extends Controller
 
    /**
     * GET /api/tasks/{id}
-    * Retrieve a single task.
     */
-   public function show(int $id): JsonResponse
+   public function show(Request $request, int $id): JsonResponse
    {
-      $task = Task::find($id);
+      $task = $request->user()->tasks()->find($id);
 
       if (!$task) {
          return response()->json([
@@ -75,11 +78,10 @@ class TaskController extends Controller
 
    /**
     * PUT /api/tasks/{id}
-    * Update an existing task.
     */
    public function update(Request $request, int $id): JsonResponse
    {
-      $task = Task::find($id);
+      $task = $request->user()->tasks()->find($id);
 
       if (!$task) {
          return response()->json([
@@ -93,6 +95,7 @@ class TaskController extends Controller
          'description' => 'nullable|string',
          'status'      => 'nullable|string|in:pending,in_progress,completed',
          'due_date'    => 'nullable|date',
+         'category'    => 'nullable|string|in:general,school,work,home,personal',
       ]);
 
       $task->update([
@@ -100,6 +103,7 @@ class TaskController extends Controller
          'description' => $validated['description'] ?? $task->description,
          'status'      => $validated['status'] ?? $task->status,
          'due_date'    => $validated['due_date'] ?? $task->due_date,
+         'category'    => $validated['category'] ?? $task->category,
       ]);
 
       return response()->json([
@@ -111,11 +115,10 @@ class TaskController extends Controller
 
    /**
     * DELETE /api/tasks/{id}
-    * Delete a task.
     */
-   public function destroy(int $id): JsonResponse
+   public function destroy(Request $request, int $id): JsonResponse
    {
-      $task = Task::find($id);
+      $task = $request->user()->tasks()->find($id);
 
       if (!$task) {
          return response()->json([

@@ -4,6 +4,7 @@ class Task {
   final String title;
   final String description;
   final String status; // pending, in_progress, completed
+  final String category; // general, school, work, home, personal
   final String? dueDate; // yyyy-MM-dd
   final String? createdAt;
   final String? updatedAt;
@@ -13,6 +14,7 @@ class Task {
     required this.title,
     required this.description,
     this.status = 'pending',
+    this.category = 'general',
     this.dueDate,
     this.createdAt,
     this.updatedAt,
@@ -31,6 +33,7 @@ class Task {
       title: json['title'] as String? ?? '',
       description: json['description'] as String? ?? '',
       status: json['status'] as String? ?? 'pending',
+      category: json['category'] as String? ?? 'general',
       dueDate: rawDue,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
@@ -43,6 +46,7 @@ class Task {
       'title': title,
       'description': description,
       'status': status,
+      'category': category,
       'due_date': dueDate,
     };
   }
@@ -53,6 +57,7 @@ class Task {
     String? title,
     String? description,
     String? status,
+    String? category,
     String? dueDate,
     String? createdAt,
     String? updatedAt,
@@ -62,6 +67,7 @@ class Task {
       title: title ?? this.title,
       description: description ?? this.description,
       status: status ?? this.status,
+      category: category ?? this.category,
       dueDate: dueDate ?? this.dueDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

@@ -6,6 +6,7 @@ import 'models/task.dart';
 import 'services/task_provider.dart';
 import 'services/app_settings_provider.dart';
 import 'services/auth_provider.dart';
+import 'services/notification_service.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
@@ -18,6 +19,10 @@ import 'utils/constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize notification service
+  await NotificationService.instance.init();
+
   final settings = AppSettingsProvider();
   await settings.loadSettings();
 

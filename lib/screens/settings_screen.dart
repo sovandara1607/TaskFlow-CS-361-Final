@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../services/app_settings_provider.dart';
 import '../services/auth_provider.dart';
 import '../services/api_service.dart';
+import '../services/task_provider.dart';
+import '../services/notification_service.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
 
@@ -128,8 +130,21 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 value: settings.notificationsEnabled,
                 activeTrackColor: AppConstants.primaryColor,
-                onChanged: (_) =>
-                    settings.setNotifications(!settings.notificationsEnabled),
+                onChanged: (_) async {
+                  final newValue = !settings.notificationsEnabled;
+                  await settings.setNotifications(newValue);
+                  if (newValue) {
+                    // Re-schedule all task reminders
+                    if (context.mounted) {
+                      final tasks = context.read<TaskProvider>().tasks;
+                      await NotificationService.instance
+                          .scheduleAllTaskReminders(tasks);
+                    }
+                  } else {
+                    // Cancel all notifications
+                    await NotificationService.instance.cancelAll();
+                  }
+                },
               ),
               Divider(
                 height: 1,

@@ -96,6 +96,27 @@ class AuthController extends Controller
     }
 
     /**
+     * PUT /api/user  (requires auth:sanctum)
+     * Update the authenticated user's profile.
+     */
+    public function updateProfile(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'username' => 'sometimes|string|max:255',
+            'email'    => 'sometimes|string|email|max:255|unique:users,email,' . $request->user()->id,
+            'phone'    => 'nullable|string|max:30',
+        ]);
+
+        $request->user()->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully',
+            'data'    => $request->user()->fresh(),
+        ], 200);
+    }
+
+    /**
      * POST /api/auth/github
      * Receives a GitHub access token from the Flutter app,
      * fetches the GitHub user, and creates/logs in the user.

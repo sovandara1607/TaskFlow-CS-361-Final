@@ -102,6 +102,38 @@ class AuthService {
     }
   }
 
+  // ── Update Profile ──
+  Future<Map<String, dynamic>> updateProfile({
+    required String token,
+    required Map<String, dynamic> data,
+  }) async {
+    final response = await http.put(
+      Uri.parse('$_baseUrl/user'),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(data),
+    );
+
+    final body = json.decode(response.body) as Map<String, dynamic>;
+
+    if (response.statusCode == 200) {
+      return body;
+    } else {
+      final message = body['message'] ?? 'Profile update failed';
+      final errors = body['errors'] as Map<String, dynamic>?;
+      String errorString = message.toString();
+      if (errors != null) {
+        errorString = errors.values
+            .expand((list) => list is List ? list : [list])
+            .join('\n');
+      }
+      throw Exception(errorString);
+    }
+  }
+
   // ── Logout ──
   Future<void> logout(String token) async {
     await http.post(

@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 
-/// Tiimo‑inspired application‑wide constants.
+/// Application‑wide constants.
 class AppConstants {
-  // ── Primary palette (soft lavender) ──
-  static const Color primaryColor = Color(0xFF8B7EC8);
-  static const Color primaryLight = Color(0xFFB8ACE6);
-  static const Color primaryDark = Color(0xFF6B5CA5);
+  // ── Primary palette (dark grey) ──
+  static const Color primaryColor = Color(0xFF424242);
+  static const Color primaryLight = Color(0xFF757575);
+  static const Color primaryDark = Color(0xFF212121);
 
   // ── Backgrounds ──
-  static const Color backgroundColor = Color(0xFFF8F6FF);
+  static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color cardColor = Color(0xFFFFFFFF);
 
   // ── Dark mode backgrounds ──
-  static const Color darkBackground = Color(0xFF1A1A2E);
-  static const Color darkSurface = Color(0xFF232340);
-  static const Color darkCard = Color(0xFF2A2A4A);
+  static const Color darkBackground = Color(0xFF1A1A1A);
+  static const Color darkSurface = Color(0xFF2C2C2C);
+  static const Color darkCard = Color(0xFF363636);
 
   // ── Pastel accents ──
   static const Color accentPink = Color(0xFFF0C6DB);
   static const Color accentMint = Color(0xFFA8E6CF);
   static const Color accentPeach = Color(0xFFFFD3B6);
-  static const Color accentLavender = Color(0xFFD4C5F9);
+  static const Color accentLavender = Color(0xFFBDBDBD);
   static const Color accentSky = Color(0xFFB6D8F2);
 
   // ── Semantic colors ──
@@ -30,9 +30,9 @@ class AppConstants {
   static const Color errorColor = Color(0xFFFF6B6B);
 
   // ── Text colors ──
-  static const Color textPrimary = Color(0xFF2D2B3D);
-  static const Color textSecondary = Color(0xFF8E8CA3);
-  static const Color textLight = Color(0xFFB8B5C8);
+  static const Color textPrimary = Color(0xFF1C1C1E);
+  static const Color textSecondary = Color(0xFF8E8E93);
+  static const Color textLight = Color(0xFFAEAEB2);
 
   // ── Strings ──
   static const String appName = 'TaskFlow';

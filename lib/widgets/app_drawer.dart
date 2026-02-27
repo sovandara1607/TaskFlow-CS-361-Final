@@ -18,9 +18,9 @@ class AppDrawer extends StatelessWidget {
     final auth = context.watch<AuthProvider>();
     final lang = settings.locale;
 
-    // Use auth user info if available, fall back to settings
-    final displayName = auth.userName ?? settings.userName;
-    final displayEmail = auth.userEmail ?? settings.userEmail;
+    // Use real authenticated user info
+    final displayName = auth.userName ?? 'User';
+    final displayEmail = auth.userEmail ?? '—';
 
     return Drawer(
       backgroundColor: isDark
@@ -33,7 +33,7 @@ class AppDrawer extends StatelessWidget {
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF9B8EC5), Color(0xFFB8ACE6)],
+                colors: [Color(0xFF424242), Color(0xFF616161)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

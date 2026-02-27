@@ -19,6 +19,7 @@ Route::post('/auth/github',   [AuthController::class, 'githubCallback']);
 // ── Protected Endpoints (require Bearer token) ─────────────────────────
 Route::middleware('auth:sanctum')->group(function () {
    Route::get('/user',         [AuthController::class, 'user']);
+   Route::put('/user',         [AuthController::class, 'updateProfile']);
    Route::post('/logout',      [AuthController::class, 'logout']);
 
    // ── Task CRUD ──

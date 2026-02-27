@@ -30,14 +30,116 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadTasks() async {
     try {
       final tasks = await ApiService().fetchTasks();
-      if (mounted)
+      if (mounted) {
         setState(() {
           _tasks = tasks;
           _loadingTasks = false;
         });
+      }
     } catch (_) {
       if (mounted) setState(() => _loadingTasks = false);
     }
+  }
+
+  /// Opens a bottom sheet allowing the user to edit their profile.
+  /// Saves changes to the server via AuthProvider.updateProfile.
+  void _showEditProfileSheet(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final nameCtrl = TextEditingController(text: auth.userName ?? '');
+    final emailCtrl = TextEditingController(text: auth.userEmail ?? '');
+    final phoneCtrl = TextEditingController(text: auth.userPhone ?? '');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: isDark ? AppConstants.darkCard : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 24,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Handle bar
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: isDark ? Colors.white24 : Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Edit Profile',
+                  style: GoogleFonts.poppins(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : AppConstants.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Changes are saved to the server.',
+                  style: GoogleFonts.poppins(
+                    fontSize: 13,
+                    color: isDark ? Colors.white54 : AppConstants.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                // Name field
+                _ProfileTextField(
+                  controller: nameCtrl,
+                  label: 'Username',
+                  icon: Icons.person_outline_rounded,
+                  isDark: isDark,
+                ),
+                const SizedBox(height: 16),
+                // Email field
+                _ProfileTextField(
+                  controller: emailCtrl,
+                  label: 'Email',
+                  icon: Icons.email_outlined,
+                  isDark: isDark,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                const SizedBox(height: 16),
+                // Phone field
+                _ProfileTextField(
+                  controller: phoneCtrl,
+                  label: 'Phone',
+                  icon: Icons.phone_outlined,
+                  isDark: isDark,
+                  keyboardType: TextInputType.phone,
+                ),
+                const SizedBox(height: 28),
+                // Save button
+                _SaveProfileButton(
+                  nameCtrl: nameCtrl,
+                  emailCtrl: emailCtrl,
+                  phoneCtrl: phoneCtrl,
+                  isDark: isDark,
+                  parentContext: context,
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -47,9 +149,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final settings = context.watch<AppSettingsProvider>();
     final lang = settings.locale;
 
+    // All profile data comes from the real authenticated user
     final username = auth.userName ?? 'User';
     final email = auth.userEmail ?? '—';
-    final userId = auth.userId;
+    final phone = auth.userPhone ?? '';
     final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
 
     // Task stats
@@ -198,48 +301,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
               subtitle: email,
               isDark: isDark,
             ),
+            _InfoCard(
+              icon: Icons.phone_rounded,
+              title: 'Phone',
+              subtitle: phone.isNotEmpty ? phone : '—',
+              isDark: isDark,
+            ),
+            const SizedBox(height: 16),
 
-            // if (userId != null)
-            //   _InfoCard(
-            //     icon: Icons.tag_rounded,
-            //     title: 'User ID',
-            //     subtitle: '#$userId',
-            //     isDark: isDark,
-            //   ),
-            // _InfoCard(
-            //   icon: Icons.verified_user_rounded,
-            //   title: 'Auth Status',
-            //   subtitle: auth.isAuthenticated
-            //       ? 'Authenticated'
-            //       : 'Not signed in',
-            //   isDark: isDark,
-            // ),
+            // ── Edit Profile button ──
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.edit_rounded, size: 18),
+                label: Text(
+                  'Edit Profile',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppConstants.primaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
+                ),
+                onPressed: () => _showEditProfileSheet(context),
+              ),
+            ),
             const SizedBox(height: 28),
-
-            // ── App Info ──
-            // _SectionHeader(title: 'App Info', isDark: isDark),
-            // const SizedBox(height: 10),
-
-            // _InfoCard(
-            //   icon: Icons.school_rounded,
-            //   title: AppLocalizations.tr('university', lang),
-            //   subtitle: 'Paragon International University',
-            //   isDark: isDark,
-            // ),
-            // _InfoCard(
-            //   icon: Icons.menu_book_rounded,
-            //   title: AppLocalizations.tr('course', lang),
-            //   subtitle: 'CS361 — Mobile App Development',
-            //   isDark: isDark,
-            // ),
-            // _InfoCard(
-            //   icon: Icons.calendar_today_rounded,
-            //   title: AppLocalizations.tr('semester', lang),
-            //   subtitle: 'Spring 2026',
-            //   isDark: isDark,
-            // ),
-
-            // const SizedBox(height: 28),
 
             // ── Logout button ──
             SizedBox(
@@ -422,6 +516,193 @@ class _InfoCard extends StatelessWidget {
             fontSize: 13,
             color: isDark ? Colors.white54 : AppConstants.textSecondary,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Save profile button with loading state ──
+class _SaveProfileButton extends StatefulWidget {
+  final TextEditingController nameCtrl;
+  final TextEditingController emailCtrl;
+  final TextEditingController phoneCtrl;
+  final bool isDark;
+  final BuildContext parentContext;
+
+  const _SaveProfileButton({
+    required this.nameCtrl,
+    required this.emailCtrl,
+    required this.phoneCtrl,
+    required this.isDark,
+    required this.parentContext,
+  });
+
+  @override
+  State<_SaveProfileButton> createState() => _SaveProfileButtonState();
+}
+
+class _SaveProfileButtonState extends State<_SaveProfileButton> {
+  bool _saving = false;
+
+  Future<void> _save() async {
+    final name = widget.nameCtrl.text.trim();
+    final email = widget.emailCtrl.text.trim();
+    final phone = widget.phoneCtrl.text.trim();
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Username cannot be empty',
+            style: GoogleFonts.poppins(fontSize: 13),
+          ),
+          backgroundColor: AppConstants.errorColor,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    setState(() => _saving = true);
+
+    try {
+      await widget.parentContext.read<AuthProvider>().updateProfile(
+        username: name,
+        email: email,
+        phone: phone.isNotEmpty ? phone : null,
+      );
+
+      if (mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(widget.parentContext).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Profile updated successfully!',
+              style: GoogleFonts.poppins(fontSize: 13),
+            ),
+            backgroundColor: AppConstants.successColor,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Failed: ${e.toString().replaceFirst('Exception: ', '')}',
+              style: GoogleFonts.poppins(fontSize: 13),
+            ),
+            backgroundColor: AppConstants.errorColor,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: ElevatedButton.icon(
+        icon: _saving
+            ? const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.white,
+                ),
+              )
+            : const Icon(Icons.check_rounded, size: 20),
+        label: Text(
+          _saving ? 'Saving…' : 'Save Changes',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 15),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppConstants.primaryColor,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          elevation: 0,
+        ),
+        onPressed: _saving ? null : _save,
+      ),
+    );
+  }
+}
+
+// ── Text field used in the edit-profile bottom sheet ──
+class _ProfileTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final IconData icon;
+  final bool isDark;
+  final TextInputType keyboardType;
+
+  const _ProfileTextField({
+    required this.controller,
+    required this.label,
+    required this.icon,
+    required this.isDark,
+    this.keyboardType = TextInputType.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      style: GoogleFonts.poppins(
+        fontSize: 14,
+        color: isDark ? Colors.white : AppConstants.textPrimary,
+      ),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: GoogleFonts.poppins(
+          fontSize: 13,
+          color: isDark ? Colors.white54 : AppConstants.textSecondary,
+        ),
+        prefixIcon: Icon(
+          icon,
+          size: 20,
+          color: isDark ? Colors.white54 : AppConstants.primaryColor,
+        ),
+        filled: true,
+        fillColor: isDark
+            ? AppConstants.darkSurface
+            : AppConstants.backgroundColor,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: isDark
+                ? Colors.white12
+                : AppConstants.primaryLight.withValues(alpha: 0.3),
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(
+            color: AppConstants.primaryColor,
+            width: 1.5,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
         ),
       ),
     );

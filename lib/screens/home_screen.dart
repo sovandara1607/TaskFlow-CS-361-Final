@@ -140,9 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _GreetingCard(
                   greeting: _greeting(lang),
-                  userName: (auth.userName ?? settings.userName)
-                      .split(' ')
-                      .first,
+                  userName: (auth.userName ?? 'User').split(' ').first,
                   subtitle: AppLocalizations.tr('whats_your_plan', lang),
                   buttonLabel: AppLocalizations.tr('new_task', lang),
                   onNewTask: () => Navigator.pushNamed(context, '/add'),
@@ -783,13 +781,13 @@ class _GreetingCardState extends State<_GreetingCard>
         buttonFg: const Color(0xFFE85D3A),
       );
     } else {
-      // Night — deep blue/purple
+      // Night — deep charcoal
       return (
-        gradient: [const Color(0xFF2C3E6B), const Color(0xFF6B5CA5)],
+        gradient: [const Color(0xFF263238), const Color(0xFF455A64)],
         icon: Icons.nightlight_round,
-        iconColor: const Color(0xFFE8E0FF),
-        shadowColor: const Color(0xFF2C3E6B),
-        buttonFg: const Color(0xFF6B5CA5),
+        iconColor: const Color(0xFFCFD8DC),
+        shadowColor: const Color(0xFF263238),
+        buttonFg: const Color(0xFF455A64),
       );
     }
   }

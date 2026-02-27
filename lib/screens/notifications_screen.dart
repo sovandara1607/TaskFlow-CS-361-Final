@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_provider.dart';
 import '../services/app_settings_provider.dart';
+import '../services/notification_service.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
 
@@ -42,6 +43,30 @@ class NotificationsScreen extends StatelessWidget {
           AppLocalizations.tr('notifications', lang),
           style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
         ),
+        actions: [
+          IconButton(
+            tooltip: 'Send Test Notification',
+            icon: const Icon(Icons.send_rounded, size: 20),
+            onPressed: () async {
+              await NotificationService.instance.sendTestNotification();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Test notification sent! Check your notification tray.',
+                      style: GoogleFonts.poppins(fontSize: 13),
+                    ),
+                    backgroundColor: AppConstants.primaryColor,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

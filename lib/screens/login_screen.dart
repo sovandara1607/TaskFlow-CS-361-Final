@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:app_links/app_links.dart';
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SnackBar(
                 content: Text(
                   'GitHub login failed: ${e.toString().replaceFirst('Exception: ', '')}',
-                  style: GoogleFonts.poppins(),
+                  style: AppFonts.of(context),
                 ),
                 backgroundColor: AppConstants.errorColor,
                 behavior: SnackBarBehavior.floating,
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SnackBar(
             content: Text(
               e.toString().replaceFirst('Exception: ', ''),
-              style: GoogleFonts.poppins(),
+              style: AppFonts.of(context),
             ),
             backgroundColor: AppConstants.errorColor,
             behavior: SnackBarBehavior.floating,
@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   Text(
                     AppConstants.appName,
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.of(context, 
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
                       color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -186,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 6),
                   Text(
                     'Welcome back',
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.of(context, 
                       fontSize: 14,
                       color: isDark
                           ? Colors.white54
@@ -271,7 +271,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     )
                                   : Text(
                                       'Log In',
-                                      style: GoogleFonts.poppins(
+                                      style: AppFonts.of(context, 
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -298,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'or',
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             color: isDark
                                 ? Colors.white54
                                 : AppConstants.textSecondary,
@@ -329,7 +329,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       label: Text(
                         'Sign in with GitHub',
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontWeight: FontWeight.w600,
                           color: isDark
                               ? Colors.white
@@ -375,7 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         "Don't have an account? ",
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           color: isDark
                               ? Colors.white54
                               : AppConstants.textSecondary,
@@ -388,7 +388,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text(
                           'Register',
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             color: AppConstants.primaryColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,

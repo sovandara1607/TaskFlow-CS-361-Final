@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
-
 import 'models/task.dart';
 import 'services/task_provider.dart';
 import 'services/app_settings_provider.dart';
@@ -45,6 +44,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<AppSettingsProvider>();
+    final currentLocale = settings.locale;
 
     return MaterialApp(
       title: AppConstants.appName,
@@ -57,13 +57,14 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: AppConstants.primaryColor,
         brightness: Brightness.light,
         scaffoldBackgroundColor: AppConstants.backgroundColor,
-        textTheme: GoogleFonts.poppinsTextTheme(),
+        textTheme: AppFonts.textTheme(currentLocale),
         appBarTheme: AppBarTheme(
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
           foregroundColor: AppConstants.textPrimary,
-          titleTextStyle: GoogleFonts.poppins(
+          titleTextStyle: AppFonts.style(
+            currentLocale,
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: AppConstants.textPrimary,
@@ -128,7 +129,8 @@ class MyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppConstants.defaultRadius),
             ),
-            textStyle: GoogleFonts.poppins(
+            textStyle: AppFonts.style(
+              currentLocale,
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),
@@ -156,7 +158,11 @@ class MyApp extends StatelessWidget {
           height: 70,
           indicatorColor: AppConstants.accentLavender.withValues(alpha: 0.5),
           labelTextStyle: WidgetStateProperty.all(
-            GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500),
+            AppFonts.style(
+              currentLocale,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
@@ -167,13 +173,17 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: AppConstants.primaryColor,
         brightness: Brightness.dark,
         scaffoldBackgroundColor: AppConstants.darkBackground,
-        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
+        textTheme: AppFonts.textTheme(
+          currentLocale,
+          ThemeData.dark().textTheme,
+        ),
         appBarTheme: AppBarTheme(
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
-          titleTextStyle: GoogleFonts.poppins(
+          titleTextStyle: AppFonts.style(
+            currentLocale,
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Colors.white,
@@ -238,7 +248,8 @@ class MyApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppConstants.defaultRadius),
             ),
-            textStyle: GoogleFonts.poppins(
+            textStyle: AppFonts.style(
+              currentLocale,
               fontWeight: FontWeight.w600,
               fontSize: 15,
             ),
@@ -268,7 +279,11 @@ class MyApp extends StatelessWidget {
           height: 70,
           indicatorColor: AppConstants.primaryColor.withValues(alpha: 0.3),
           labelTextStyle: WidgetStateProperty.all(
-            GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500),
+            AppFonts.style(
+              currentLocale,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),

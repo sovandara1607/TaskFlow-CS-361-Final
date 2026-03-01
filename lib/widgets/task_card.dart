@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import '../models/task.dart';
 import '../utils/constants.dart';
 import 'glass_container.dart';
@@ -89,7 +89,7 @@ class TaskCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 s.$2,
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontSize: 13,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   color: isActive ? s.$4 : null,
@@ -167,7 +167,7 @@ class TaskCard extends StatelessWidget {
                         ),
                         child: Text(
                           _shortDate(task.dueDate),
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: task.isOverdue
@@ -186,7 +186,7 @@ class TaskCard extends StatelessWidget {
                 // ── Title ──
                 Text(
                   task.title,
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     height: 1.25,
@@ -220,7 +220,7 @@ class TaskCard extends StatelessWidget {
                       ),
                       child: Text(
                         AppConstants.categoryLabel(task.category),
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: isDark
@@ -262,7 +262,7 @@ class TaskCard extends StatelessWidget {
                             const SizedBox(width: 6),
                             Text(
                               task.statusLabel,
-                              style: GoogleFonts.poppins(
+                              style: AppFonts.of(context, 
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: isDark

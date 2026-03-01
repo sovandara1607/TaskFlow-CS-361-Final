@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import '../utils/constants.dart';
 
 /// Reusable liquid-glass dialogs used throughout the app.
@@ -50,7 +50,7 @@ class AppDialogs {
               const SizedBox(width: 12),
               Text(
                 title,
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontWeight: FontWeight.w700,
                   fontSize: 17,
                   color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -60,7 +60,7 @@ class AppDialogs {
           ),
           content: Text(
             message,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               fontSize: 14,
               color: isDark ? Colors.white70 : AppConstants.textSecondary,
             ),
@@ -71,7 +71,7 @@ class AppDialogs {
               onPressed: () => Navigator.pop(ctx, false),
               child: Text(
                 cancelText,
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   color: isDark ? Colors.white54 : AppConstants.textSecondary,
                 ),
               ),
@@ -99,7 +99,7 @@ class AppDialogs {
                   onPressed: () => Navigator.pop(ctx, true),
                   child: Text(
                     confirmText,
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                    style: AppFonts.of(context, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -151,7 +151,7 @@ class AppDialogs {
               const SizedBox(width: 12),
               Text(
                 'Success',
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
                   color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -161,7 +161,7 @@ class AppDialogs {
           ),
           content: Text(
             message,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               fontSize: 14,
               color: isDark ? Colors.white70 : AppConstants.textSecondary,
             ),
@@ -194,7 +194,7 @@ class AppDialogs {
                     onPressed: () => Navigator.pop(ctx),
                     child: Text(
                       'OK',
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
                       ),
@@ -249,7 +249,7 @@ class AppDialogs {
               const SizedBox(width: 12),
               Text(
                 'Error',
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
                   color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -259,7 +259,7 @@ class AppDialogs {
           ),
           content: Text(
             message,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               fontSize: 14,
               color: isDark ? Colors.white70 : AppConstants.textSecondary,
             ),
@@ -292,7 +292,7 @@ class AppDialogs {
                     onPressed: () => Navigator.pop(ctx),
                     child: Text(
                       'OK',
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
                       ),

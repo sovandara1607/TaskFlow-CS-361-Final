@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/api_service.dart';
@@ -96,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
                 // ── App name ──
                 Text(
                   AppConstants.appName,
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
                     color: AppConstants.textPrimary,
@@ -106,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen>
                 const SizedBox(height: 8),
                 Text(
                   'Organize your day beautifully',
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 14,
                     color: AppConstants.textSecondary,
                     fontWeight: FontWeight.w400,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/api_service.dart';
@@ -58,7 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           SnackBar(
             content: Text(
               e.toString().replaceFirst('Exception: ', ''),
-              style: GoogleFonts.poppins(),
+              style: AppFonts.of(context),
             ),
             backgroundColor: AppConstants.errorColor,
             behavior: SnackBarBehavior.floating,
@@ -116,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20),
                   Text(
                     'Create Account',
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.of(context, 
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
                       color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -126,7 +126,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 6),
                   Text(
                     'Sign up to get started',
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.of(context, 
                       fontSize: 14,
                       color: isDark
                           ? Colors.white54
@@ -276,7 +276,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     )
                                   : Text(
                                       'Create Account',
-                                      style: GoogleFonts.poppins(
+                                      style: AppFonts.of(context, 
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -295,7 +295,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       Text(
                         'Already have an account? ',
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           color: isDark
                               ? Colors.white54
                               : AppConstants.textSecondary,
@@ -308,7 +308,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         child: Text(
                           'Log In',
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             color: AppConstants.primaryColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,

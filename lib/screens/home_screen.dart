@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_provider.dart';
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 6),
             Text(
               AppConstants.appName,
-              style: GoogleFonts.poppins(
+              style: AppFonts.of(context, 
                 fontWeight: FontWeight.w700,
                 color: isDark ? Colors.white : AppConstants.textPrimary,
               ),
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       dayName,
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -123,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Text(
                       '$monthName ${now.day}, ${now.year}',
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         fontSize: 15,
                         color: isDark
                             ? Colors.white54
@@ -217,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 12),
                             Text(
                               AppLocalizations.tr('no_tasks_yet', lang),
-                              style: GoogleFonts.poppins(
+                              style: AppFonts.of(context, 
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: isDark
@@ -228,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 4),
                             Text(
                               AppLocalizations.tr('tap_to_create', lang),
-                              style: GoogleFonts.poppins(
+                              style: AppFonts.of(context, 
                                 fontSize: 13,
                                 color: isDark
                                     ? Colors.white54
@@ -358,7 +358,7 @@ class _StatBubble extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             value,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -366,7 +366,7 @@ class _StatBubble extends StatelessWidget {
           ),
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               fontSize: 11,
               color: isDark ? Colors.white70 : AppConstants.textSecondary,
             ),
@@ -405,7 +405,7 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: isDark ? Colors.white54 : AppConstants.textSecondary,
@@ -421,7 +421,7 @@ class _SectionHeader extends StatelessWidget {
             ),
             child: Text(
               '$count',
-              style: GoogleFonts.poppins(
+              style: AppFonts.of(context, 
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: AppConstants.primaryDark,
@@ -601,7 +601,7 @@ class _MiniTaskTile extends StatelessWidget {
                       children: [
                         Text(
                           task.title,
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: isCompleted
@@ -618,7 +618,7 @@ class _MiniTaskTile extends StatelessWidget {
                         if (task.dueDate != null)
                           Text(
                             _shortDate(task.dueDate),
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 12,
                               color: isDark
                                   ? Colors.white38
@@ -803,7 +803,7 @@ class _GreetingCardState extends State<_GreetingCard>
                     children: [
                       Text(
                         '${widget.greeting}, ${widget.userName}!',
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -812,7 +812,7 @@ class _GreetingCardState extends State<_GreetingCard>
                       const SizedBox(height: 6),
                       Text(
                         widget.subtitle,
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 14,
                           color: Colors.white70,
                         ),
@@ -824,7 +824,7 @@ class _GreetingCardState extends State<_GreetingCard>
                           icon: const Icon(Icons.add_rounded, size: 20),
                           label: Text(
                             widget.buttonLabel,
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontWeight: FontWeight.w600,
                             ),
                           ),

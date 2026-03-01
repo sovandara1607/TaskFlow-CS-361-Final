@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_provider.dart';
@@ -137,7 +137,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           child: Text(
                             AppLocalizations.tr('add_task', lang),
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -156,7 +156,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         children: [
                           Text(
                             AppLocalizations.tr('task_title', lang),
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: Colors.white60,
@@ -178,7 +178,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 child: TextFormField(
                                   controller: _titleCtrl,
                                   validator: Validators.minLength3,
-                                  style: GoogleFonts.poppins(
+                                  style: AppFonts.of(context, 
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -188,11 +188,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                       'enter_task_title',
                                       lang,
                                     ),
-                                    hintStyle: GoogleFonts.poppins(
+                                    hintStyle: AppFonts.of(context, 
                                       color: Colors.white30,
                                       fontSize: 16,
                                     ),
-                                    errorStyle: GoogleFonts.poppins(
+                                    errorStyle: AppFonts.of(context, 
                                       color: const Color(0xFFFF6B6B),
                                       fontSize: 12,
                                     ),
@@ -211,7 +211,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           const SizedBox(height: 14),
                           Text(
                             AppLocalizations.tr('due_date', lang),
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: Colors.white60,
@@ -230,7 +230,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                 const SizedBox(width: 8),
                                 Text(
                                   dateStr,
-                                  style: GoogleFonts.poppins(
+                                  style: AppFonts.of(context, 
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
                                     color: _dueDate != null
@@ -275,7 +275,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       // ── Description ──
                       Text(
                         AppLocalizations.tr('description', lang),
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: isDark
@@ -288,7 +288,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         controller: _descCtrl,
                         maxLines: 3,
                         validator: Validators.required,
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 14,
                           color: isDark
                               ? Colors.white
@@ -299,7 +299,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             'enter_description',
                             lang,
                           ),
-                          hintStyle: GoogleFonts.poppins(
+                          hintStyle: AppFonts.of(context, 
                             fontSize: 14,
                             color: isDark
                                 ? Colors.white30
@@ -333,7 +333,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       // ── Category ──
                       Text(
                         AppLocalizations.tr('category', lang),
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: isDark
@@ -388,7 +388,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                   const SizedBox(width: 6),
                                   Text(
                                     AppConstants.categoryLabel(cat),
-                                    style: GoogleFonts.poppins(
+                                    style: AppFonts.of(context, 
                                       fontSize: 13,
                                       fontWeight: selected
                                           ? FontWeight.w600
@@ -411,7 +411,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       // ── Status ──
                       Text(
                         AppLocalizations.tr('status', lang),
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: isDark
@@ -468,7 +468,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                                       const SizedBox(height: 4),
                                       Text(
                                         e.value,
-                                        style: GoogleFonts.poppins(
+                                        style: AppFonts.of(context, 
                                           fontSize: 11,
                                           fontWeight: selected
                                               ? FontWeight.w700
@@ -519,7 +519,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             _isSaving
                                 ? AppLocalizations.tr('saving', lang)
                                 : AppLocalizations.tr('create_task', lang),
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                             ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/api_service.dart';
@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 20),
                 Text(
                   'Edit Profile',
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -97,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 6),
                 Text(
                   'Changes are saved to the server.',
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 13,
                     color: isDark ? Colors.white54 : AppConstants.textSecondary,
                   ),
@@ -168,7 +168,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text(
           AppLocalizations.tr('profile', lang),
-          style: GoogleFonts.poppins(
+          style: AppFonts.of(context, 
             fontWeight: FontWeight.w700,
             color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
@@ -223,7 +223,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Center(
                       child: Text(
                         initial,
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -234,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                   Text(
                     username,
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.of(context, 
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -243,7 +243,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 2),
                   Text(
                     email,
-                    style: GoogleFonts.poppins(
+                    style: AppFonts.of(context, 
                       fontSize: 13,
                       color: isDark
                           ? Colors.white54
@@ -264,7 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       label: Text(
                         'Edit Profile',
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
                           color: isDark
@@ -388,7 +388,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 label: Text(
                   AppLocalizations.tr('logout', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                     color: AppConstants.errorColor,
@@ -444,7 +444,7 @@ class _SectionHeader extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: GoogleFonts.poppins(
+        style: AppFonts.of(context, 
           fontSize: 16,
           fontWeight: FontWeight.w700,
           color: isDark ? Colors.white70 : AppConstants.textPrimary,
@@ -481,7 +481,7 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               value,
-              style: GoogleFonts.poppins(
+              style: AppFonts.of(context, 
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: color,
@@ -490,7 +490,7 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               label,
-              style: GoogleFonts.poppins(
+              style: AppFonts.of(context, 
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
                 color: isDark ? Colors.white54 : AppConstants.textSecondary,
@@ -541,7 +541,7 @@ class _InfoRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w500,
                     fontSize: 11,
                     color: isDark ? Colors.white38 : AppConstants.textSecondary,
@@ -549,7 +549,7 @@ class _InfoRow extends StatelessWidget {
                 ),
                 Text(
                   subtitle,
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -599,7 +599,7 @@ class _SaveProfileButtonState extends State<_SaveProfileButton> {
         SnackBar(
           content: Text(
             'Username cannot be empty',
-            style: GoogleFonts.poppins(fontSize: 13),
+            style: AppFonts.of(context, fontSize: 13),
           ),
           backgroundColor: AppConstants.errorColor,
           behavior: SnackBarBehavior.floating,
@@ -623,7 +623,7 @@ class _SaveProfileButtonState extends State<_SaveProfileButton> {
           SnackBar(
             content: Text(
               'Profile updated successfully!',
-              style: GoogleFonts.poppins(fontSize: 13),
+              style: AppFonts.of(context, fontSize: 13),
             ),
             backgroundColor: AppConstants.successColor,
             behavior: SnackBarBehavior.floating,
@@ -639,7 +639,7 @@ class _SaveProfileButtonState extends State<_SaveProfileButton> {
           SnackBar(
             content: Text(
               'Failed: ${e.toString().replaceFirst('Exception: ', '')}',
-              style: GoogleFonts.poppins(fontSize: 13),
+              style: AppFonts.of(context, fontSize: 13),
             ),
             backgroundColor: AppConstants.errorColor,
             behavior: SnackBarBehavior.floating,
@@ -669,7 +669,7 @@ class _SaveProfileButtonState extends State<_SaveProfileButton> {
             : const Icon(Icons.check_rounded, size: 20),
         label: Text(
           _saving ? 'Saving…' : 'Save Changes',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 15),
+          style: AppFonts.of(context, fontWeight: FontWeight.w600, fontSize: 15),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppConstants.primaryColor,
@@ -706,13 +706,13 @@ class _ProfileTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
-      style: GoogleFonts.poppins(
+      style: AppFonts.of(context, 
         fontSize: 14,
         color: isDark ? Colors.white : AppConstants.textPrimary,
       ),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: GoogleFonts.poppins(
+        labelStyle: AppFonts.of(context, 
           fontSize: 13,
           color: isDark ? Colors.white54 : AppConstants.textSecondary,
         ),

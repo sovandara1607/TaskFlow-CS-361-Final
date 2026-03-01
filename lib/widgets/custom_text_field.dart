@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import '../utils/constants.dart';
 
 /// Liquid-glass styled text form field — frosted background,
@@ -44,18 +44,18 @@ class CustomTextField extends StatelessWidget {
             keyboardType: keyboardType,
             maxLines: maxLines,
             obscureText: obscureText,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               color: isDark ? Colors.white : AppConstants.textPrimary,
               fontSize: 14,
             ),
             decoration: InputDecoration(
               labelText: label,
-              labelStyle: GoogleFonts.poppins(
+              labelStyle: AppFonts.of(context, 
                 color: isDark ? Colors.white54 : AppConstants.textSecondary,
                 fontSize: 13,
               ),
               hintText: hint,
-              hintStyle: GoogleFonts.poppins(
+              hintStyle: AppFonts.of(context, 
                 color: isDark ? Colors.white30 : AppConstants.textLight,
                 fontSize: 13,
               ),

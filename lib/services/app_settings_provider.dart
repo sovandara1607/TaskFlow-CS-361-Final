@@ -44,11 +44,11 @@ class AppSettingsProvider extends ChangeNotifier {
   }
 
   // ── Locale ──
-  Future<void> setLocale(String locale) async {
-    _locale = locale;
+  Future<void> setLocale(String code) async {
+    _locale = code;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyLocale, locale);
+    await prefs.setString(_keyLocale, code);
   }
 
   // ── Notifications ──

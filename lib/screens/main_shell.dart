@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../services/app_settings_provider.dart';
 import '../services/notification_provider.dart';
@@ -236,7 +236,7 @@ class _GlassNavItem extends StatelessWidget {
                           ),
                           child: Text(
                             badgeCount > 99 ? '99+' : '$badgeCount',
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 9,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -258,7 +258,7 @@ class _GlassNavItem extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 5),
                             child: Text(
                               label,
-                              style: GoogleFonts.poppins(
+                              style: AppFonts.of(context, 
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: isDark

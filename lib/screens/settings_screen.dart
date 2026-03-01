@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../services/app_settings_provider.dart';
 import '../services/auth_provider.dart';
@@ -24,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           AppLocalizations.tr('settings', lang),
-          style: GoogleFonts.poppins(
+          style: AppFonts.of(context, 
             fontWeight: FontWeight.w700,
             color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
@@ -49,14 +49,14 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('dark_mode', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
                 ),
                 subtitle: Text(
                   AppLocalizations.tr('use_dark_theme', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 12,
                     color: isDark ? Colors.white54 : AppConstants.textSecondary,
                   ),
@@ -78,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('language', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -89,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                   dropdownColor: isDark
                       ? AppConstants.glassDialogDark
                       : AppConstants.glassDialogLight,
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 14,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -126,7 +126,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('push_notifications', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -175,7 +175,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('privacy_policy', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -198,7 +198,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       title: Text(
                         '${AppLocalizations.tr('privacy_policy', lang)}',
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontWeight: FontWeight.w700,
                           color: isDark
                               ? Colors.white
@@ -209,7 +209,7 @@ class SettingsScreen extends StatelessWidget {
                         'Your privacy is important to us. TaskFlow does not '
                         'collect personal data beyond what is needed for '
                         'functionality. All data is transmitted securely.',
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           color: isDark
                               ? Colors.white54
                               : AppConstants.textSecondary,
@@ -221,7 +221,7 @@ class SettingsScreen extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                           child: Text(
                             AppLocalizations.tr('close', lang),
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               color: AppConstants.primaryColor,
                               fontWeight: FontWeight.w600,
                             ),
@@ -242,7 +242,7 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 Text(
                   '${AppConstants.appName} v1.0.0',
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: isDark ? Colors.white54 : AppConstants.textSecondary,
@@ -251,7 +251,7 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 4),
                 // Text(
                 //   'CS361 — Mobile App Development',
-                //   style: GoogleFonts.poppins(
+                //   style: AppFonts.of(context, 
                 //     fontSize: 12,
                 //     color: isDark ? Colors.white38 : AppConstants.textLight,
                 //   ),
@@ -273,7 +273,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               label: Text(
                 AppLocalizations.tr('log_out', lang),
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   color: const Color(0xFFFF6B6B),
                   fontWeight: FontWeight.w600,
                 ),
@@ -298,14 +298,14 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     title: Text(
                       '${AppLocalizations.tr('log_out', lang)}',
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : AppConstants.textPrimary,
                       ),
                     ),
                     content: Text(
                       AppLocalizations.tr('confirm_logout', lang),
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         color: isDark
                             ? Colors.white54
                             : AppConstants.textSecondary,
@@ -316,7 +316,7 @@ class SettingsScreen extends StatelessWidget {
                         onPressed: () => Navigator.pop(context),
                         child: Text(
                           AppLocalizations.tr('cancel', lang),
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             color: isDark
                                 ? Colors.white54
                                 : AppConstants.textSecondary,
@@ -346,7 +346,7 @@ class SettingsScreen extends StatelessWidget {
                         },
                         child: Text(
                           AppLocalizations.tr('log_out', lang),
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -407,7 +407,7 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: AppFonts.of(context, 
               fontSize: 12,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../services/task_provider.dart';
@@ -156,7 +156,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               const SizedBox(height: 16),
               Text(
                 task.title,
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -195,7 +195,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                         children: [
                           Text(
                             displayTask.statusLabel,
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: isDark
@@ -227,7 +227,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     ),
                     child: Text(
                       '${AppConstants.categoryLabel(task.category)}',
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -246,7 +246,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     const SizedBox(width: 4),
                     Text(
                       _shortDate(task.dueDate),
-                      style: GoogleFonts.poppins(
+                      style: AppFonts.of(context, 
                         fontSize: 13,
                         color: isDark
                             ? Colors.white70
@@ -261,7 +261,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 task.description.isNotEmpty
                     ? task.description
                     : 'No description provided.',
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontSize: 14,
                   color: isDark ? Colors.white54 : AppConstants.textSecondary,
                   height: 1.5,
@@ -350,7 +350,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
               const SizedBox(width: 10),
               Text(
                 s.$2,
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontSize: 13,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   color: isActive ? s.$4 : null,
@@ -376,7 +376,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       appBar: AppBar(
         title: Text(
           AppLocalizations.tr('my_tasks', lang),
-          style: GoogleFonts.poppins(
+          style: AppFonts.of(context, 
             fontWeight: FontWeight.w700,
             fontSize: 20,
             color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -400,13 +400,13 @@ class _TaskListScreenState extends State<TaskListScreen> {
               child: TextField(
                 controller: _searchCtrl,
                 onChanged: (v) => setState(() => _searchQuery = v),
-                style: GoogleFonts.poppins(
+                style: AppFonts.of(context, 
                   fontSize: 14,
                   color: isDark ? Colors.white : AppConstants.textPrimary,
                 ),
                 decoration: InputDecoration(
                   hintText: AppLocalizations.tr('search_tasks', lang),
-                  hintStyle: GoogleFonts.poppins(
+                  hintStyle: AppFonts.of(context, 
                     color: isDark ? Colors.white54 : AppConstants.textLight,
                     fontSize: 14,
                   ),
@@ -523,7 +523,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           const SizedBox(height: 16),
                           Text(
                             AppLocalizations.tr('could_not_load', lang),
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: isDark
@@ -535,7 +535,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           Text(
                             provider.error!,
                             textAlign: TextAlign.center,
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 13,
                               color: isDark
                                   ? Colors.white54
@@ -573,7 +573,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           provider.tasks.isEmpty
                               ? AppLocalizations.tr('no_tasks_yet', lang)
                               : AppLocalizations.tr('no tasks match', lang),
-                          style: GoogleFonts.poppins(
+                          style: AppFonts.of(context, 
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: isDark
@@ -749,7 +749,7 @@ class _FilterChip extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: GoogleFonts.poppins(
+              style: AppFonts.of(context, 
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: selected

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../models/app_notification.dart';
 import '../services/notification_provider.dart';
@@ -39,7 +39,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       appBar: AppBar(
         title: Text(
           AppLocalizations.tr('notifications', lang),
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+          style: AppFonts.of(context, fontWeight: FontWeight.w700),
         ),
         actions: [
           if (notifications.isNotEmpty) ...[
@@ -113,11 +113,11 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       builder: (ctx) => AlertDialog(
         title: Text(
           AppLocalizations.tr('clear_all_notifications', lang),
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: AppFonts.of(context, fontWeight: FontWeight.w600),
         ),
         content: Text(
           AppLocalizations.tr('clear_all_confirm', lang),
-          style: GoogleFonts.poppins(
+          style: AppFonts.of(context, 
             fontSize: 14,
             color: isDark ? Colors.white70 : AppConstants.textSecondary,
           ),
@@ -127,7 +127,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               AppLocalizations.tr('cancel', lang),
-              style: GoogleFonts.poppins(),
+              style: AppFonts.of(context),
             ),
           ),
           TextButton(
@@ -137,7 +137,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             },
             child: Text(
               AppLocalizations.tr('clear_all', lang),
-              style: GoogleFonts.poppins(color: AppConstants.errorColor),
+              style: AppFonts.of(context, color: AppConstants.errorColor),
             ),
           ),
         ],
@@ -171,7 +171,7 @@ class _EmptyState extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   AppLocalizations.tr('no_notifications', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: isDark ? Colors.white70 : AppConstants.textPrimary,
@@ -180,7 +180,7 @@ class _EmptyState extends StatelessWidget {
                 const SizedBox(height: 6),
                 Text(
                   AppLocalizations.tr('notifications_empty_hint', lang),
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontSize: 13,
                     color: isDark ? Colors.white38 : AppConstants.textSecondary,
                   ),
@@ -269,7 +269,7 @@ class _NotificationCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               notification.title,
-                              style: GoogleFonts.poppins(
+                              style: AppFonts.of(context, 
                                 fontSize: 14,
                                 fontWeight: notification.isRead
                                     ? FontWeight.w500
@@ -299,7 +299,7 @@ class _NotificationCard extends StatelessWidget {
                       const SizedBox(height: 3),
                       Text(
                         notification.message,
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 12,
                           color: isDark
                               ? Colors.white54
@@ -311,7 +311,7 @@ class _NotificationCard extends StatelessWidget {
                       const SizedBox(height: 6),
                       Text(
                         notification.timeAgo,
-                        style: GoogleFonts.poppins(
+                        style: AppFonts.of(context, 
                           fontSize: 11,
                           color: isDark
                               ? Colors.white30

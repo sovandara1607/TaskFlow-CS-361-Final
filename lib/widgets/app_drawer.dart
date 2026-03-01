@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../services/app_settings_provider.dart';
 import '../services/auth_provider.dart';
@@ -77,7 +77,7 @@ class AppDrawer extends StatelessWidget {
                             displayName.isNotEmpty
                                 ? displayName[0].toUpperCase()
                                 : '?',
-                            style: GoogleFonts.poppins(
+                            style: AppFonts.of(context, 
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -92,7 +92,7 @@ class AppDrawer extends StatelessWidget {
                           children: [
                             Text(
                               displayName,
-                              style: GoogleFonts.poppins(
+                              style: AppFonts.of(context, 
                                 fontWeight: FontWeight.w700,
                                 fontSize: 16,
                                 color: isDark
@@ -105,7 +105,7 @@ class AppDrawer extends StatelessWidget {
                             const SizedBox(height: 2),
                             Text(
                               displayEmail,
-                              style: GoogleFonts.poppins(
+                              style: AppFonts.of(context, 
                                 fontSize: 12,
                                 color: isDark
                                     ? Colors.white54
@@ -211,7 +211,7 @@ class AppDrawer extends StatelessWidget {
                                 children: [
                                   Text(
                                     AppLocalizations.tr('about_text', lang),
-                                    style: GoogleFonts.poppins(fontSize: 13),
+                                    style: AppFonts.of(context, fontSize: 13),
                                   ),
                                 ],
                               );
@@ -295,7 +295,7 @@ class _SectionLabel extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8, bottom: 2),
       child: Text(
         label,
-        style: GoogleFonts.poppins(
+        style: AppFonts.of(context, 
           fontSize: 11,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.0,
@@ -402,7 +402,7 @@ class _DrawerNavItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: GoogleFonts.poppins(
+                  style: AppFonts.of(context, 
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color:

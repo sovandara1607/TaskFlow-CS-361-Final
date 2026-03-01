@@ -339,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   _InfoRow(
                     icon: Icons.person_rounded,
-                    title: 'Username',
+                    title: 'Name',
                     subtitle: username,
                     isDark: isDark,
                   ),

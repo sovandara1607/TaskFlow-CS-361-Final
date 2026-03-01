@@ -238,7 +238,6 @@ class AppDrawer extends StatelessWidget {
                           iconColor: AppConstants.errorColor,
                           titleColor: AppConstants.errorColor,
                           onTap: () async {
-                            Navigator.pop(context);
                             final confirmed = await AppDialogs.showConfirmation(
                               context: context,
                               title: AppLocalizations.tr('log_out', lang),
@@ -249,7 +248,7 @@ class AppDrawer extends StatelessWidget {
                               confirmText: AppLocalizations.tr('log_out', lang),
                               confirmColor: AppConstants.errorColor,
                             );
-                            if (!confirmed) return;
+                            if (!confirmed || !context.mounted) return;
                             final auth = context.read<AuthProvider>();
                             await auth.logout();
                             ApiService.setToken(null);
@@ -257,7 +256,7 @@ class AppDrawer extends StatelessWidget {
                               Navigator.pushNamedAndRemoveUntil(
                                 context,
                                 '/login',
-                                (route) => false,
+                                (_) => false,
                               );
                             }
                           },

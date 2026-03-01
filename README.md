@@ -13,7 +13,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android%20%7C%20Web-lightgrey)]()
 
-*A beautifully crafted, full-stack task management app featuring a Tiimo-inspired pastel UI, complete CRUD operations, token-based authentication with GitHub OAuth, dark mode, and bilingual localization (English/Khmer).*
+*A beautifully crafted, full-stack task management app featuring a liquid-glass UI design system, complete CRUD operations, token-based authentication with GitHub OAuth, dual notification system (server + local), dark mode, and bilingual localization (English/Khmer).*
 
 ---
 
@@ -41,6 +41,7 @@
 - [Screens & UI](#-screens--ui)
 - [State Management](#-state-management)
 - [Localization](#-localization)
+- [Notification System](#-notification-system)
 - [Dependencies](#-dependencies)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -51,7 +52,7 @@
 
 **TaskFlow** is a cross-platform task management application built with a modern mobile-first approach. The project demonstrates end-to-end software engineering — from designing a RESTful API with Laravel Sanctum authentication to implementing a responsive, animated Flutter client with Provider-based state management.
 
-The app empowers users to organize their daily tasks across customizable categories, track progress with real-time statistics, and stay on top of deadlines with an intelligent notification system — all wrapped in an elegant pastel-lavender design language.
+The app empowers users to organize their daily tasks across five customizable categories, track progress with real-time statistics on a time-of-day-aware dashboard, and stay on top of deadlines with a dual notification system (server-side event notifications + client-side local reminders) — all wrapped in a signature **liquid-glass** design language with pervasive backdrop blur, translucent gradients, and 3-D floating elements.
 
 ---
 
@@ -60,40 +61,53 @@ The app empowers users to organize their daily tasks across customizable categor
 ### 🗂 Task Management (Full CRUD)
 - **Create** tasks with title, description, due date, category, and status
 - **Read** tasks with filtering by status (`Pending`, `In Progress`, `Completed`) and category (`General`, `School`, `Work`, `Home`, `Personal`)
-- **Update** tasks inline with pre-populated edit forms
-- **Delete** tasks with swipe-to-delete (Slidable) and confirmation dialogs
-- **Toggle** task completion status with a single tap
+- **Update** tasks inline with pre-populated edit forms or quick-change status via popup menu
+- **Delete** tasks with swipe-to-delete and confirmation dialogs
+- **Toggle** task completion with swipe-to-complete gestures
+- **Search** tasks by title or description in real time
 
 ### 🔐 Authentication & Security
 - Email/password registration and login via **Laravel Sanctum** (token-based)
 - **GitHub OAuth** sign-in with deep link callback (`taskflow://auth`)
 - Auto-login with persisted tokens via `SharedPreferences`
-- Token-scoped API — all task data is isolated per authenticated user
+- Token-scoped API — all task and notification data is isolated per authenticated user
+- Profile editing (username, email, phone) synced to server
 - Biometric authentication toggle (extensible via `local_auth`)
 
-### 🎨 UI/UX Design
-- **Tiimo-inspired** pastel/lavender design system with custom color palette
+### 🎨 UI/UX — Liquid Glass Design System
+- **Liquid-glass aesthetic** — pervasive use of `BackdropFilter` blur (σ = 12–40) with translucent gradient fills across navigation bars, drawers, cards, dialogs, and text fields
+- **Coral 3-D FAB** — radial gradient floating action button with a custom dashed-ring `CustomPainter`
+- **Animated greeting card** — time-of-day adaptive gradients (morning sun → afternoon sky → evening twilight → night moon) with a continuously bobbing icon animation
 - **Material 3** with `colorSchemeSeed` and full light/dark theme support
-- **Google Fonts (Poppins)** typography throughout
-- Smooth animations: splash fade/scale, card transitions, navigation effects
+- **Google Fonts** — Poppins (English) + Kantumruy Pro (Khmer) with locale-aware switching
+- Smooth animations: splash fade/scale, card transitions, selected-tab pill expansion
 - Responsive layout adapting to different screen sizes
 
 ### 🌍 Internationalization
 - Bilingual support: **English** and **Khmer** (ភាសាខ្មែរ)
-- 90+ translated UI strings with runtime locale switching
+- **93 translated UI strings** per locale with runtime locale switching
 - Custom in-app localization engine (no build-time code generation required)
+- Locale-aware font family switching (Poppins ↔ Kantumruy Pro)
 
 ### 📊 Dashboard & Analytics
-- Today view with time-of-day aware greeting
-- Real-time task statistics: Total, Pending, Active, Completed
-- Overdue/due-today/upcoming task notification center
-- Grouped task lists by status with visual indicators
+- Today view with time-of-day aware greeting (Morning / Afternoon / Evening / Night)
+- Real-time task statistics in glass bubbles: Total, Pending, Active, Done
+- Task lists grouped by status with section headers and counts
+- Swipe-to-complete and swipe-to-delete directly from the dashboard
+- Pull-to-refresh for live data sync
+
+### 🔔 Dual Notification System
+- **Server-side notifications** — Laravel creates records on task creation, task completion, login, and profile updates; displayed in a dedicated Notifications tab with unread badges
+- **Client-side local reminders** — `flutter_local_notifications` schedules reminders at 8:00 AM on task due dates; fires immediately for overdue tasks
+- Mark as read, mark all as read, swipe-to-dismiss, and clear all
 
 ### ⚙️ Settings & Preferences
 - Dark mode toggle with system-wide theme propagation
-- Language selector (EN/KM)
-- Push notification and biometric toggles
-- All preferences persisted across sessions
+- Language selector (EN/KM) with instant UI refresh
+- Push notification toggle (re-schedules or cancels all local reminders)
+- Biometric authentication toggle
+- Privacy policy dialog
+- All preferences persisted across sessions via `SharedPreferences`
 
 ---
 
@@ -109,7 +123,8 @@ The app empowers users to organize their daily tasks across customizable categor
 | **Database** | MySQL | Relational data persistence |
 | **HTTP Client** | `package:http` | REST API communication |
 | **Local Storage** | SharedPreferences | Token & settings persistence |
-| **Typography** | Google Fonts (Poppins) | Consistent design language |
+| **Local Notifications** | `flutter_local_notifications` | Scheduled task reminders |
+| **Typography** | Google Fonts (Poppins / Kantumruy Pro) | Locale-aware design language |
 | **Deep Links** | `app_links` / `url_launcher` | OAuth callback handling |
 
 ---
@@ -122,13 +137,13 @@ The app empowers users to organize their daily tasks across customizable categor
 │                                                                 │
 │  ┌───────────┐   ┌───────────────┐   ┌────────────────────┐    │
 │  │  Screens   │──▶│   Providers   │──▶│    API Service      │    │
-│  │  (UI)      │◀──│ (State Mgmt)  │◀──│   (HTTP Client)     │    │
+│  │  (11 UI)   │◀──│ (4 providers) │◀──│   (HTTP Client)     │    │
 │  └───────────┘   └───────────────┘   └─────────┬──────────┘    │
 │                                                 │               │
-│  ┌───────────┐   ┌───────────────┐              │               │
-│  │  Widgets   │   │    Models     │              │               │
-│  │(Reusable)  │   │  (Data Layer) │              │               │
-│  └───────────┘   └───────────────┘              │               │
+│  ┌───────────┐   ┌───────────────┐   ┌─────────┴──────────┐    │
+│  │  Widgets   │   │    Models     │   │ NotificationService │    │
+│  │ (6 glass)  │   │ (Task, Notif) │   │  (Local Reminders)  │    │
+│  └───────────┘   └───────────────┘   └────────────────────┘    │
 └─────────────────────────────────────────────────┼───────────────┘
                                                   │ HTTP/REST
                                                   │ Bearer Token
@@ -137,14 +152,17 @@ The app empowers users to organize their daily tasks across customizable categor
 │                                                 ▼               │
 │  ┌───────────┐   ┌───────────────┐   ┌────────────────────┐    │
 │  │  Routes    │──▶│  Controllers  │──▶│  Eloquent Models    │    │
-│  │ (api.php)  │   │  (Auth/Task)  │   │  (User / Task)      │    │
-│  └───────────┘   └───────────────┘   └─────────┬──────────┘    │
-│                                                 │               │
+│  │ (api.php)  │   │ (Auth/Task/   │   │ (User/Task/Notif)   │    │
+│  └───────────┘   │  Notification) │   └─────────┬──────────┘    │
+│                   └───────────────┘             │               │
 │  ┌───────────┐   ┌───────────────┐              │               │
 │  │  Sanctum   │   │  Migrations   │              ▼               │
-│  │ (Tokens)   │   │  (Schema)     │       ┌──────────┐          │
+│  │ (Tokens)   │   │  (10 files)   │       ┌──────────┐          │
 │  └───────────┘   └───────────────┘       │  MySQL    │          │
 │                                           └──────────┘          │
+│  ┌─────────────────────────────┐                                │
+│  │  NotificationService (PHP)  │ ← Server-side event dispatch   │
+│  └─────────────────────────────┘                                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -154,57 +172,66 @@ The app empowers users to organize their daily tasks across customizable categor
 
 ```
 taskflow/
-├── lib/                          # Flutter application source
-│   ├── main.dart                 # App entry point, theme config, route definitions
+├── lib/                              # Flutter application source
+│   ├── main.dart                     # App entry point, 4 providers, 9 named routes, Material 3 theming
 │   ├── l10n/
-│   │   └── app_localizations.dart   # Bilingual translations (EN/KM)
+│   │   └── app_localizations.dart    # 93 keys × 2 locales (EN/KM)
 │   ├── models/
-│   │   └── task.dart             # Task data model (fromJson, toJson, copyWith)
+│   │   ├── task.dart                 # Task model (fromJson, toJson, copyWith, isOverdue)
+│   │   └── app_notification.dart     # Notification model (icon, color, timeAgo)
 │   ├── screens/
-│   │   ├── splash_screen.dart    # Animated splash with auto-login check
-│   │   ├── login_screen.dart     # Email/password + GitHub OAuth login
-│   │   ├── register_screen.dart  # User registration form
-│   │   ├── main_shell.dart       # Bottom navigation shell (3 tabs)
-│   │   ├── home_screen.dart      # Today dashboard with stats & greeting
-│   │   ├── task_list_screen.dart  # Filterable task list with search
-│   │   ├── add_task_screen.dart   # Create new task form
-│   │   ├── edit_task_screen.dart  # Edit existing task form
-│   │   ├── profile_screen.dart   # User profile & task statistics
-│   │   ├── settings_screen.dart  # App preferences & appearance
-│   │   └── notifications_screen.dart  # Overdue/upcoming task alerts
+│   │   ├── splash_screen.dart        # Animated splash with elastic scale + auto-login
+│   │   ├── login_screen.dart         # Email/password + GitHub OAuth + deep link listener
+│   │   ├── register_screen.dart      # Registration form with password strength validation
+│   │   ├── main_shell.dart           # 4-tab liquid-glass bottom nav + coral 3-D FAB
+│   │   ├── home_screen.dart          # Today dashboard: greeting card, stats, grouped tasks
+│   │   ├── task_list_screen.dart     # Searchable/filterable list + detail bottom sheet
+│   │   ├── add_task_screen.dart      # Create form with category/status chip selectors
+│   │   ├── edit_task_screen.dart     # Pre-populated edit form + delete capability
+│   │   ├── profile_screen.dart       # Avatar, stats, account details, edit profile sheet
+│   │   ├── settings_screen.dart      # Theme, language, notifications, about
+│   │   └── notifications_screen.dart # Server notifications with unread badges & swipe actions
 │   ├── services/
-│   │   ├── api_service.dart      # REST client (CRUD operations)
-│   │   ├── auth_service.dart     # Auth API calls (login, register, OAuth)
-│   │   ├── auth_provider.dart    # Auth state management (ChangeNotifier)
-│   │   ├── task_provider.dart    # Task state management (ChangeNotifier)
-│   │   └── app_settings_provider.dart  # Settings persistence
+│   │   ├── api_service.dart          # REST client (tasks + notifications CRUD)
+│   │   ├── auth_service.dart         # Auth API calls (login, register, OAuth, profile update)
+│   │   ├── auth_provider.dart        # Auth state (token, user data, auto-login)
+│   │   ├── task_provider.dart        # Task state (CRUD, computed stats, notification scheduling)
+│   │   ├── app_settings_provider.dart # Settings persistence (theme, locale, toggles)
+│   │   ├── notification_provider.dart # Server notifications state (fetch, read, delete)
+│   │   └── notification_service.dart  # Local reminders (flutter_local_notifications, timezone)
 │   ├── utils/
-│   │   ├── constants.dart        # Colors, dimensions, helper methods
-│   │   └── validators.dart       # Form validation utilities
+│   │   ├── constants.dart            # Color palette, dimensions, category/status helpers, glass colors
+│   │   └── validators.dart           # 5 form validators (required, email, number, price, minLength)
 │   └── widgets/
-│       ├── app_dialogs.dart      # Reusable dialog/bottom sheet utilities
-│       ├── app_drawer.dart       # Navigation drawer with user info
-│       ├── custom_text_field.dart # Styled text input component
-│       └── task_card.dart        # Animated task display card
+│       ├── TextTheme.dart            # Locale-aware font system (Poppins / Kantumruy Pro)
+│       ├── glass_container.dart      # Reusable liquid-glass card (BackdropFilter + gradient)
+│       ├── task_card.dart            # Task card with status popup menu + overdue badge
+│       ├── app_drawer.dart           # Frosted-glass drawer with profile header + nav links
+│       ├── app_dialogs.dart          # Glass confirmation, success, error dialogs + bottom sheets
+│       └── custom_text_field.dart    # Liquid-glass text input with blur effect
 │
-├── taskflow-api/                 # Laravel backend API
+├── taskflow-api/                     # Laravel backend API
 │   ├── app/
 │   │   ├── Http/Controllers/Api/
-│   │   │   ├── AuthController.php    # Auth endpoints (register, login, OAuth)
-│   │   │   └── TaskController.php    # Task CRUD endpoints
-│   │   └── Models/
-│   │       ├── User.php              # User model (Sanctum, Socialite)
-│   │       └── Task.php              # Task model (Eloquent)
-│   ├── database/migrations/         # Schema migrations (8 files)
+│   │   │   ├── AuthController.php        # Register, login, logout, OAuth, profile update
+│   │   │   ├── TaskController.php        # Task CRUD (creates notifications on events)
+│   │   │   └── NotificationController.php # Notification CRUD (read, mark, delete)
+│   │   ├── Models/
+│   │   │   ├── User.php                  # Sanctum tokens, tasks relationship, phone
+│   │   │   ├── Task.php                  # Eloquent (status enum, category, user FK)
+│   │   │   └── Notification.php          # Type, title, message, data (JSON), read_at
+│   │   └── Services/
+│   │       └── NotificationService.php   # Event dispatchers (task_created, completed, login, profile)
+│   ├── database/migrations/              # 10 migration files
 │   ├── routes/
-│   │   ├── api.php                   # API route definitions
-│   │   └── web.php                   # OAuth redirect routes
+│   │   ├── api.php                       # 14 API endpoints (auth + tasks + notifications)
+│   │   └── web.php                       # GitHub OAuth redirect routes
 │   └── ...
 │
-├── test/                         # Widget & unit tests
-├── assets/images/                # Static image assets
-├── pubspec.yaml                  # Flutter dependencies
-└── README.md                     # You are here
+├── test/                             # Widget & unit tests
+├── assets/images/                    # Static image assets
+├── pubspec.yaml                      # Flutter dependencies
+└── README.md                         # You are here
 ```
 
 ---
@@ -220,7 +247,7 @@ taskflow/
 | PHP | ≥ 8.2 | [php.net](https://php.net) |
 | Composer | Latest | [getcomposer.org](https://getcomposer.org) |
 | MySQL | 8.0+ | [mysql.com](https://dev.mysql.com/downloads/) |
-| Node.js | 18+ | [nodejs.org](https://nodejs.org) *(optional, for Laravel Mix)* |
+| Node.js | 18+ | [nodejs.org](https://nodejs.org) *(optional, for Laravel Vite)* |
 
 ### Backend Setup (Laravel API)
 
@@ -240,7 +267,7 @@ php artisan key:generate
 #    DB_HOST=127.0.0.1
 #    DB_PORT=3306
 #    DB_DATABASE=taskflow
-#    DB_USERNAME=
+#    DB_USERNAME=root
 #    DB_PASSWORD=
 
 # 5. Configure GitHub OAuth in .env (optional)
@@ -295,6 +322,7 @@ flutter build web              # Web deployment
 | `POST` | `/login` | Authenticate & receive token | ✗ |
 | `POST` | `/auth/github` | GitHub OAuth token exchange | ✗ |
 | `GET` | `/user` | Get authenticated user profile | ✓ |
+| `PUT` | `/user` | Update profile (username, email, phone) | ✓ |
 | `POST` | `/logout` | Revoke current access token | ✓ |
 
 ### Task Endpoints (Protected)
@@ -306,6 +334,17 @@ flutter build web              # Web deployment
 | `GET` | `/tasks/{id}` | Get a specific task | ✓ |
 | `PUT` | `/tasks/{id}` | Update a task | ✓ |
 | `DELETE` | `/tasks/{id}` | Delete a task | ✓ |
+
+### Notification Endpoints (Protected)
+
+| Method | Endpoint | Description | Auth |
+|:---:|:---|:---|:---:|
+| `GET` | `/notifications` | List all notifications | ✓ |
+| `GET` | `/notifications/unread-count` | Get unread notification count | ✓ |
+| `PUT` | `/notifications/{id}/read` | Mark a notification as read | ✓ |
+| `PUT` | `/notifications/read-all` | Mark all notifications as read | ✓ |
+| `DELETE` | `/notifications/{id}` | Delete a notification | ✓ |
+| `DELETE` | `/notifications` | Delete all notifications | ✓ |
 
 ### Request/Response Examples
 
@@ -369,7 +408,7 @@ flutter build web              # Web deployment
 
 | Field | Rules |
 |:---|:---|
-| `title` | Required, string |
+| `title` | Required, string, max 255 characters |
 | `description` | Optional, string |
 | `status` | Optional, one of: `pending`, `in_progress`, `completed` |
 | `category` | Optional, one of: `general`, `school`, `work`, `home`, `personal` |
@@ -386,6 +425,7 @@ flutter build web              # Web deployment
 | `username` | VARCHAR | Required |
 | `email` | VARCHAR | Required, Unique |
 | `password` | VARCHAR | Nullable (for OAuth users) |
+| `phone` | VARCHAR | Nullable |
 | `github_id` | VARCHAR | Nullable, Unique |
 | `avatar` | VARCHAR | Nullable |
 | `email_verified_at` | TIMESTAMP | Nullable |
@@ -403,6 +443,19 @@ flutter build web              # Web deployment
 | `category` | VARCHAR | Default: `general` |
 | `due_date` | DATE | Nullable |
 | `user_id` | BIGINT | Foreign Key → `users.id` (CASCADE delete) |
+| `created_at` | TIMESTAMP | Auto-managed |
+| `updated_at` | TIMESTAMP | Auto-managed |
+
+### Notifications Table
+| Column | Type | Constraints |
+|:---|:---|:---|
+| `id` | BIGINT | Primary Key, Auto Increment |
+| `user_id` | BIGINT | Foreign Key → `users.id` (CASCADE delete) |
+| `type` | VARCHAR | `task_created`, `task_completed`, `login_success`, `profile_updated` |
+| `title` | VARCHAR | Notification title |
+| `message` | TEXT | Notification body |
+| `data` | JSON | Nullable, extra payload |
+| `read_at` | TIMESTAMP | Nullable (null = unread) |
 | `created_at` | TIMESTAMP | Auto-managed |
 | `updated_at` | TIMESTAMP | Auto-managed |
 
@@ -428,7 +481,7 @@ User → Login Screen → AuthService.login() → POST /api/login
 2. url_launcher opens → GET /auth/github/redirect (Laravel)
 3. Laravel redirects → GitHub Authorization Page
 4. User authorizes → GitHub redirects → GET /login/oauth2/code/github (Laravel)
-5. Laravel creates/finds user → Generates Sanctum token
+5. Laravel creates/finds user via Socialite → Generates Sanctum token
 6. Redirect to deep link → taskflow://auth?token={TOKEN}
 7. AppLinks listener captures URI → AuthProvider.loginWithToken()
 8. Token persisted → User authenticated
@@ -436,57 +489,76 @@ User → Login Screen → AuthService.login() → POST /api/login
 
 ### Auto-Login
 ```
-App Launch → SplashScreen → AuthProvider.tryAutoLogin()
-                                    ↓
-                          SharedPreferences.get('token')
-                                    ↓
-                          GET /api/user (validate token)
-                                    ↓
-                        Valid? → Navigate to Home
-                        Invalid? → Navigate to Login
+App Launch → SplashScreen (2.5s animated splash)
+                    ↓
+          AuthProvider.tryAutoLogin()
+                    ↓
+          SharedPreferences.get('auth_token')
+                    ↓
+          GET /api/user (validate token)
+                    ↓
+          Valid? → Navigate to Home (MainShell)
+          Invalid? → Navigate to Login
 ```
 
 ---
 
 ## 🖥 Screens & UI
 
-| # | Screen | Description |
+### Navigation Structure
+
+The app uses a **4-tab liquid-glass bottom navigation bar** with a floating coral FAB:
+
+| Tab | Icon | Screen | Description |
+|:---:|:---:|:---|:---|
+| 0 | 🏠 | **Home** | Today dashboard with greeting, stats, grouped tasks |
+| 1 | ✅ | **Tasks** | Searchable, filterable task list with detail sheets |
+| 2 | 👤 | **Profile** | Avatar, account details, task statistics, edit sheet |
+| 3 | 💬 | **Notifications** | Server notifications with unread badges |
+| FAB | ➕ | **Add Task** | Create form (pushed as a separate route) |
+
+### All Screens
+
+| # | Screen | Key Features |
 |:-:|:---|:---|
-| 1 | **Splash** | Animated logo with fade/scale transition, auto-login check |
-| 2 | **Login** | Email/password form + GitHub OAuth button with deep link listener |
-| 3 | **Register** | Registration form with real-time validation (8+ char password) |
-| 4 | **Home (Today)** | Dashboard with greeting, date, stat bubbles, grouped task lists |
-| 5 | **Task List** | Searchable, filterable list with status/category chips & swipe actions |
-| 6 | **Add Task** | Create form with visual category selector and date picker |
-| 7 | **Edit Task** | Pre-populated edit form with delete capability |
-| 8 | **Profile** | User avatar, info, live task statistics, app/course info |
-| 9 | **Settings** | Theme toggle, language selector, notification/biometric preferences |
-| 10 | **Notifications** | Overdue, due-today, and upcoming task sections |
-| 11 | **Navigation Drawer** | Gradient header, quick links to all screens, logout |
+| 1 | **Splash** | Animated logo with elastic scale (1200ms), gradient background, auto-login check |
+| 2 | **Login** | Glass card form, password visibility toggle, GitHub OAuth button + deep link listener |
+| 3 | **Register** | Glass card form, password match validation, 8+ char requirement |
+| 4 | **Home (Today)** | Time-of-day greeting card with floating animated icon, 4 stat bubbles, status-grouped task lists, pull-to-refresh |
+| 5 | **Task List** | Glass search bar, status filter chips, category filter chips, task cards with swipe gestures, detail bottom sheet with inline status change |
+| 6 | **Add Task** | Split layout (colored header + form card), glass title input, date picker, category/status chip selectors |
+| 7 | **Edit Task** | Same layout as Add, pre-populated fields, header delete button with confirmation |
+| 8 | **Profile** | Gradient avatar with initial, edit profile bottom sheet (username/email/phone), task stat cards, account detail rows, logout |
+| 9 | **Settings** | Dark mode toggle, language dropdown, notification toggle (re-schedules reminders), privacy policy, about (v1.0.0), logout |
+| 10 | **Notifications** | Mark all read / clear all actions, notification cards with type-based icons and colors, unread dot indicator, swipe-to-delete, relative timestamps |
+| 11 | **Navigation Drawer** | Frosted-glass sidebar (blur: 24), profile header, nav groups in glass cards, pinned logout |
 
 ### Design System
 
 | Element | Value |
 |:---|:---|
-| **Primary Color** | `#8B7EC8` (Lavender) |
-| **Primary Light** | `#B8ACE6` |
-| **Primary Dark** | `#6B5CA5` |
-| **Accent Colors** | Pink `#FFB5C2`, Mint `#B8E6CF`, Peach `#FFD4A8`, Sky `#A8D4FF` |
-| **Corner Radius** | Cards: `20px`, Inputs: `16px` |
-| **Font** | Poppins (Google Fonts) |
-| **Design Language** | Material 3 with custom pastel/lavender theme |
+| **Primary Color** | `#424242` (Dark Grey) |
+| **Primary Light** | `#757575` |
+| **Primary Dark** | `#212121` |
+| **Pastel Accents** | Pink `#F0C6DB`, Mint `#A8E6CF`, Peach `#FFD3B6`, Lavender `#BDBDBD`, Sky `#B6D8F2` |
+| **Semantic** | Success `#6BCB77`, Warning `#FFB347`, Error `#FF6B6B` |
+| **Corner Radius** | Cards: `20px`, Inputs: `16px`, Nav Bar: `40px` |
+| **Glass Blur** | σ 12 (cards) — σ 40 (nav bar, drawers) |
+| **Fonts** | Poppins (EN) / Kantumruy Pro (KM) via Google Fonts |
+| **Design Language** | Material 3 + Liquid Glass (BackdropFilter + translucent gradients) |
 
 ---
 
 ## 🧩 State Management
 
-TaskFlow uses **Provider** with `ChangeNotifier` for reactive state management across three providers:
+TaskFlow uses **Provider** with `ChangeNotifier` for reactive state management across four providers:
 
 | Provider | Responsibility |
 |:---|:---|
-| `AuthProvider` | User authentication state, token management, auto-login |
-| `TaskProvider` | Task CRUD operations, list management, computed statistics |
-| `AppSettingsProvider` | Theme mode, locale, notifications, biometrics, user preferences |
+| `AuthProvider` | User authentication state, token management, auto-login, profile updates |
+| `TaskProvider` | Task CRUD operations, list management, computed statistics (total/pending/active/done), local notification scheduling |
+| `AppSettingsProvider` | Theme mode (light/dark), locale (en/km), notification & biometric toggles |
+| `NotificationProvider` | Server notification state — fetch, unread count, mark read, delete |
 
 All providers are injected at the root via `MultiProvider` and consumed with `context.watch<T>()` / `context.read<T>()` throughout the widget tree.
 
@@ -496,12 +568,41 @@ All providers are injected at the root via `MultiProvider` and consumed with `co
 
 TaskFlow supports full bilingual UI localization:
 
-| Language | Code | Coverage |
-|:---|:---:|:---|
-| English | `en` | ✅ Complete (90+ strings) |
-| Khmer (ភាសាខ្មែរ) | `km` | ✅ Complete (90+ strings) |
+| Language | Code | Font | Coverage |
+|:---|:---:|:---|:---|
+| English | `en` | Poppins | ✅ 93 strings |
+| Khmer (ភាសាខ្មែរ) | `km` | Kantumruy Pro | ✅ 93 strings |
 
-Language can be switched at runtime from **Settings → Language** and is persisted across sessions via `SharedPreferences`.
+Language can be switched at runtime from **Settings → Language** and is persisted across sessions via `SharedPreferences`. The font family automatically switches to match the selected locale.
+
+**Localized categories include:** app name, navigation labels, task statuses, category names, greetings (morning/afternoon/evening/night), form labels, validation messages, confirmations, success/error messages, and settings descriptions.
+
+---
+
+## 🔔 Notification System
+
+TaskFlow implements a **dual notification architecture**:
+
+### Server-Side (Laravel → Notifications Tab)
+The Laravel backend creates `Notification` records when events occur:
+
+| Event | Type | Trigger |
+|:---|:---|:---|
+| User logs in | `login_success` | `AuthController@login` |
+| Task created | `task_created` | `TaskController@store` |
+| Task completed | `task_completed` | `TaskController@update` (status → completed) |
+| Profile updated | `profile_updated` | `AuthController@updateProfile` |
+
+These are displayed in the **Notifications tab** with type-based icons, colors, unread indicators, and relative timestamps.
+
+### Client-Side (flutter_local_notifications → System Tray)
+The Flutter app schedules **local reminders** via `flutter_local_notifications`:
+
+- Fires at **8:00 AM** on the task's due date
+- Fires **immediately** if the task is already overdue at creation
+- Automatically re-scheduled when tasks are updated
+- Cancelled when tasks are deleted or completed
+- Respects the notification toggle in Settings
 
 ---
 
@@ -511,16 +612,21 @@ Language can be switched at runtime from **Settings → Language** and is persis
 
 | Package | Version | Purpose |
 |:---|:---:|:---|
-| `provider` | ^6.1.2 | State management |
+| `provider` | ^6.1.2 | State management (4 ChangeNotifier providers) |
 | `http` | ^1.2.1 | HTTP client for REST API |
-| `google_fonts` | ^6.2.1 | Poppins typography |
-| `shared_preferences` | ^2.2.3 | Local key-value persistence |
-| `flutter_slidable` | ^3.1.1 | Swipe-to-action on task cards |
+| `google_fonts` | ^6.2.1 | Poppins & Kantumruy Pro typography |
+| `shared_preferences` | ^2.2.3 | Token, settings, and preference persistence |
+| `flutter_slidable` | ^3.1.1 | Swipe-to-complete and swipe-to-delete gestures |
 | `local_auth` | ^2.3.0 | Biometric authentication |
-| `url_launcher` | ^6.2.5 | External URL/browser launching |
-| `app_links` | ^6.3.3 | Deep link handling (OAuth callback) |
+| `url_launcher` | ^6.2.5 | GitHub OAuth browser launch |
+| `app_links` | ^6.3.3 | Deep link handling (`taskflow://auth` callback) |
 | `font_awesome_flutter` | ^10.8.0 | GitHub & social icons |
-| `intl` | ^0.19.0 | Date formatting & i18n |
+| `intl` | ^0.19.0 | Date formatting & i18n utilities |
+| `flutter_local_notifications` | ^18.0.1 | Scheduled task due-date reminders |
+| `timezone` | ^0.10.0 | Timezone-aware notification scheduling |
+| `flutter_timezone` | ^4.1.1 | Device timezone detection |
+| `permission_handler` | ^11.3.1 | Runtime permission requests (Android 13+) |
+| `liquid_glass_ui` | ^0.4.0 | Liquid glass UI utilities |
 
 ### Laravel (Backend)
 

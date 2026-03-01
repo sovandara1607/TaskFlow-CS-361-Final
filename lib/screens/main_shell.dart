@@ -93,7 +93,7 @@ class _MainShellState extends State<MainShell> {
 const _kNavIcons = <IconData>[
   Icons.home_rounded,
   Icons.fact_check_outlined,
-  Icons.description_outlined,
+  Icons.person_outline_rounded,
   Icons.chat_bubble_outline_rounded,
 ];
 
@@ -236,7 +236,8 @@ class _GlassNavItem extends StatelessWidget {
                           ),
                           child: Text(
                             badgeCount > 99 ? '99+' : '$badgeCount',
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 9,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -258,7 +259,8 @@ class _GlassNavItem extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 5),
                             child: Text(
                               label,
-                              style: AppFonts.of(context, 
+                              style: AppFonts.of(
+                                context,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: isDark

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../utils/alert_helper.dart';
 import 'package:app_links/app_links.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/auth_provider.dart';
@@ -65,22 +66,14 @@ class _LoginScreenState extends State<LoginScreen> {
           await auth.loginWithToken(token);
 
           if (mounted) {
+            AlertHelper.showSuccess(context, 'Welcome back!');
             Navigator.pushReplacementNamed(context, '/');
           }
         } catch (e) {
           if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'GitHub login failed: ${e.toString().replaceFirst('Exception: ', '')}',
-                  style: AppFonts.of(context),
-                ),
-                backgroundColor: AppConstants.errorColor,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+            AlertHelper.showError(
+              context,
+              'GitHub login failed: ${e.toString().replaceFirst('Exception: ', '')}',
             );
           }
         }
@@ -110,22 +103,14 @@ class _LoginScreenState extends State<LoginScreen> {
       ApiService.setToken(auth.token);
 
       if (mounted) {
+        AlertHelper.showSuccess(context, 'Welcome back!');
         Navigator.pushReplacementNamed(context, '/');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              e.toString().replaceFirst('Exception: ', ''),
-              style: AppFonts.of(context),
-            ),
-            backgroundColor: AppConstants.errorColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+        AlertHelper.showError(
+          context,
+          e.toString().replaceFirst('Exception: ', ''),
         );
       }
     }
@@ -176,7 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   Text(
                     AppConstants.appName,
-                    style: AppFonts.of(context, 
+                    style: AppFonts.of(
+                      context,
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
                       color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -186,7 +172,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 6),
                   Text(
                     'Welcome back',
-                    style: AppFonts.of(context, 
+                    style: AppFonts.of(
+                      context,
                       fontSize: 14,
                       color: isDark
                           ? Colors.white54
@@ -271,7 +258,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     )
                                   : Text(
                                       'Log In',
-                                      style: AppFonts.of(context, 
+                                      style: AppFonts.of(
+                                        context,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -298,7 +286,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           'or',
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             color: isDark
                                 ? Colors.white54
                                 : AppConstants.textSecondary,
@@ -329,7 +318,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       label: Text(
                         'Sign in with GitHub',
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontWeight: FontWeight.w600,
                           color: isDark
                               ? Colors.white
@@ -375,7 +365,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         "Don't have an account? ",
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           color: isDark
                               ? Colors.white54
                               : AppConstants.textSecondary,
@@ -388,7 +379,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text(
                           'Register',
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             color: AppConstants.primaryColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,

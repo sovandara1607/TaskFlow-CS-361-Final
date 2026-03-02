@@ -3,6 +3,7 @@ import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/api_service.dart';
+import '../utils/alert_helper.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
 import '../widgets/custom_text_field.dart';
@@ -50,22 +51,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ApiService.setToken(auth.token);
 
       if (mounted) {
+        AlertHelper.showSuccess(context, 'Account created successfully!');
         Navigator.pushReplacementNamed(context, '/');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              e.toString().replaceFirst('Exception: ', ''),
-              style: AppFonts.of(context),
-            ),
-            backgroundColor: AppConstants.errorColor,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
+        AlertHelper.showError(
+          context,
+          e.toString().replaceFirst('Exception: ', ''),
         );
       }
     }
@@ -116,7 +109,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20),
                   Text(
                     'Create Account',
-                    style: AppFonts.of(context, 
+                    style: AppFonts.of(
+                      context,
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
                       color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -126,7 +120,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 6),
                   Text(
                     'Sign up to get started',
-                    style: AppFonts.of(context, 
+                    style: AppFonts.of(
+                      context,
                       fontSize: 14,
                       color: isDark
                           ? Colors.white54
@@ -276,7 +271,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     )
                                   : Text(
                                       'Create Account',
-                                      style: AppFonts.of(context, 
+                                      style: AppFonts.of(
+                                        context,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
                                       ),
@@ -295,7 +291,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       Text(
                         'Already have an account? ',
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           color: isDark
                               ? Colors.white54
                               : AppConstants.textSecondary,
@@ -308,7 +305,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         child: Text(
                           'Log In',
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             color: AppConstants.primaryColor,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,

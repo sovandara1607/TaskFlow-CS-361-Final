@@ -9,6 +9,7 @@ import '../l10n/app_localizations.dart';
 import '../widgets/task_card.dart';
 import '../widgets/app_dialogs.dart';
 import '../utils/constants.dart';
+import '../utils/alert_helper.dart';
 import '../widgets/glass_container.dart';
 
 /// Tiimo‑style Task List Screen — filter chips, swipe gestures, categories.
@@ -156,7 +157,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
               const SizedBox(height: 16),
               Text(
                 task.title,
-                style: AppFonts.of(context, 
+                style: AppFonts.of(
+                  context,
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -175,10 +177,22 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       );
                       if (selected != null && selected != currentStatus) {
                         setSheetState(() => currentStatus = selected);
-                        context.read<TaskProvider>().quickUpdateStatus(
-                          task,
-                          selected,
-                        );
+                        final ok = await context
+                            .read<TaskProvider>()
+                            .quickUpdateStatus(task, selected);
+                        if (context.mounted) {
+                          if (ok) {
+                            AlertHelper.showSuccess(
+                              context,
+                              'Status changed to ${selected.replaceAll('_', ' ')}',
+                            );
+                          } else {
+                            AlertHelper.showError(
+                              context,
+                              'Failed to update status',
+                            );
+                          }
+                        }
                       }
                     },
                     child: Container(
@@ -195,7 +209,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                         children: [
                           Text(
                             displayTask.statusLabel,
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: isDark
@@ -227,7 +242,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     ),
                     child: Text(
                       '${AppConstants.categoryLabel(task.category)}',
-                      style: AppFonts.of(context, 
+                      style: AppFonts.of(
+                        context,
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
                         color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -246,7 +262,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                     const SizedBox(width: 4),
                     Text(
                       _shortDate(task.dueDate),
-                      style: AppFonts.of(context, 
+                      style: AppFonts.of(
+                        context,
                         fontSize: 13,
                         color: isDark
                             ? Colors.white70
@@ -261,7 +278,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 task.description.isNotEmpty
                     ? task.description
                     : 'No description provided.',
-                style: AppFonts.of(context, 
+                style: AppFonts.of(
+                  context,
                   fontSize: 14,
                   color: isDark ? Colors.white54 : AppConstants.textSecondary,
                   height: 1.5,
@@ -350,7 +368,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
               const SizedBox(width: 10),
               Text(
                 s.$2,
-                style: AppFonts.of(context, 
+                style: AppFonts.of(
+                  context,
                   fontSize: 13,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   color: isActive ? s.$4 : null,
@@ -376,7 +395,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
       appBar: AppBar(
         title: Text(
           AppLocalizations.tr('my_tasks', lang),
-          style: AppFonts.of(context, 
+          style: AppFonts.of(
+            context,
             fontWeight: FontWeight.w700,
             fontSize: 20,
             color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -400,13 +420,15 @@ class _TaskListScreenState extends State<TaskListScreen> {
               child: TextField(
                 controller: _searchCtrl,
                 onChanged: (v) => setState(() => _searchQuery = v),
-                style: AppFonts.of(context, 
+                style: AppFonts.of(
+                  context,
                   fontSize: 14,
                   color: isDark ? Colors.white : AppConstants.textPrimary,
                 ),
                 decoration: InputDecoration(
                   hintText: AppLocalizations.tr('search_tasks', lang),
-                  hintStyle: AppFonts.of(context, 
+                  hintStyle: AppFonts.of(
+                    context,
                     color: isDark ? Colors.white54 : AppConstants.textLight,
                     fontSize: 14,
                   ),
@@ -523,7 +545,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           const SizedBox(height: 16),
                           Text(
                             AppLocalizations.tr('could_not_load', lang),
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: isDark
@@ -535,7 +558,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           Text(
                             provider.error!,
                             textAlign: TextAlign.center,
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 13,
                               color: isDark
                                   ? Colors.white54
@@ -573,7 +597,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           provider.tasks.isEmpty
                               ? AppLocalizations.tr('no_tasks_yet', lang)
                               : AppLocalizations.tr('no tasks match', lang),
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                             color: isDark
@@ -614,7 +639,27 @@ class _TaskListScreenState extends State<TaskListScreen> {
                           motion: const BehindMotion(),
                           children: [
                             SlidableAction(
-                              onPressed: (_) => provider.toggleTaskStatus(task),
+                              onPressed: (_) async {
+                                final wasCompleted = task.status == 'completed';
+                                final ok = await provider.toggleTaskStatus(
+                                  task,
+                                );
+                                if (context.mounted) {
+                                  if (ok) {
+                                    AlertHelper.showSuccess(
+                                      context,
+                                      wasCompleted
+                                          ? 'Task marked as pending'
+                                          : 'Task completed!',
+                                    );
+                                  } else {
+                                    AlertHelper.showError(
+                                      context,
+                                      'Failed to toggle task status',
+                                    );
+                                  }
+                                }
+                              },
                               backgroundColor: AppConstants.successColor,
                               foregroundColor: Colors.white,
                               icon: task.status == 'completed'
@@ -656,8 +701,24 @@ class _TaskListScreenState extends State<TaskListScreen> {
                             arguments: task,
                           ),
                           onDelete: () => _deleteTask(task),
-                          onStatusChange: (newStatus) {
-                            provider.quickUpdateStatus(task, newStatus);
+                          onStatusChange: (newStatus) async {
+                            final ok = await provider.quickUpdateStatus(
+                              task,
+                              newStatus,
+                            );
+                            if (context.mounted) {
+                              if (ok) {
+                                AlertHelper.showSuccess(
+                                  context,
+                                  'Status changed to ${newStatus.replaceAll('_', ' ')}',
+                                );
+                              } else {
+                                AlertHelper.showError(
+                                  context,
+                                  'Failed to update status',
+                                );
+                              }
+                            }
                           },
                         ),
                       );
@@ -749,7 +810,8 @@ class _FilterChip extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               label,
-              style: AppFonts.of(context, 
+              style: AppFonts.of(
+                context,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: selected

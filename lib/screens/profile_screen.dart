@@ -9,6 +9,7 @@ import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
 import '../widgets/glass_container.dart';
 import '../widgets/app_dialogs.dart';
+import '../utils/alert_helper.dart';
 
 /// Profile screen that displays the authenticated user's real credentials
 /// and live task statistics fetched from the API.
@@ -88,7 +89,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 20),
                 Text(
                   'Edit Profile',
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -97,7 +99,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 6),
                 Text(
                   'Changes are saved to the server.',
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontSize: 13,
                     color: isDark ? Colors.white54 : AppConstants.textSecondary,
                   ),
@@ -168,7 +171,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         title: Text(
           AppLocalizations.tr('profile', lang),
-          style: AppFonts.of(context, 
+          style: AppFonts.of(
+            context,
             fontWeight: FontWeight.w700,
             color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
@@ -223,7 +227,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Center(
                       child: Text(
                         initial,
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -234,7 +239,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                   Text(
                     username,
-                    style: AppFonts.of(context, 
+                    style: AppFonts.of(
+                      context,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -243,7 +249,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 2),
                   Text(
                     email,
-                    style: AppFonts.of(context, 
+                    style: AppFonts.of(
+                      context,
                       fontSize: 13,
                       color: isDark
                           ? Colors.white54
@@ -264,7 +271,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       label: Text(
                         'Edit Profile',
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
                           color: isDark
@@ -388,7 +396,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 label: Text(
                   AppLocalizations.tr('logout', lang),
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                     color: AppConstants.errorColor,
@@ -415,6 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   await auth.logout();
                   ApiService.setToken(null);
                   if (mounted) {
+                    AlertHelper.showInfo(context, 'You have been logged out');
                     Navigator.pushNamedAndRemoveUntil(
                       context,
                       '/login',
@@ -444,7 +454,8 @@ class _SectionHeader extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: AppFonts.of(context, 
+        style: AppFonts.of(
+          context,
           fontSize: 16,
           fontWeight: FontWeight.w700,
           color: isDark ? Colors.white70 : AppConstants.textPrimary,
@@ -481,7 +492,8 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               value,
-              style: AppFonts.of(context, 
+              style: AppFonts.of(
+                context,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 color: color,
@@ -490,7 +502,8 @@ class _StatCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               label,
-              style: AppFonts.of(context, 
+              style: AppFonts.of(
+                context,
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
                 color: isDark ? Colors.white54 : AppConstants.textSecondary,
@@ -541,7 +554,8 @@ class _InfoRow extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w500,
                     fontSize: 11,
                     color: isDark ? Colors.white38 : AppConstants.textSecondary,
@@ -549,7 +563,8 @@ class _InfoRow extends StatelessWidget {
                 ),
                 Text(
                   subtitle,
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -669,7 +684,11 @@ class _SaveProfileButtonState extends State<_SaveProfileButton> {
             : const Icon(Icons.check_rounded, size: 20),
         label: Text(
           _saving ? 'Saving…' : 'Save Changes',
-          style: AppFonts.of(context, fontWeight: FontWeight.w600, fontSize: 15),
+          style: AppFonts.of(
+            context,
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+          ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppConstants.primaryColor,
@@ -706,13 +725,15 @@ class _ProfileTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
-      style: AppFonts.of(context, 
+      style: AppFonts.of(
+        context,
         fontSize: 14,
         color: isDark ? Colors.white : AppConstants.textPrimary,
       ),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: AppFonts.of(context, 
+        labelStyle: AppFonts.of(
+          context,
           fontSize: 13,
           color: isDark ? Colors.white54 : AppConstants.textSecondary,
         ),

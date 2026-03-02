@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
@@ -18,16 +19,49 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
+  Timer? _timeCheckTimer;
+  int _lastHour = DateTime.now().hour;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Check every 30 seconds if the hour changed and refresh the greeting
+    _timeCheckTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      final currentHour = DateTime.now().hour;
+      if (currentHour != _lastHour) {
+        _lastHour = currentHour;
+        if (mounted) setState(() {});
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final provider = context.read<TaskProvider>();
       if (provider.tasks.isEmpty && !provider.isLoading) {
         provider.fetchTasks();
       }
     });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Refresh greeting when app comes back to foreground
+    if (state == AppLifecycleState.resumed) {
+      final currentHour = DateTime.now().hour;
+      if (currentHour != _lastHour) {
+        _lastHour = currentHour;
+        if (mounted) setState(() {});
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timeCheckTimer?.cancel();
+    super.dispose();
   }
 
   String _greeting(String lang) {
@@ -84,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 6),
             Text(
               AppConstants.appName,
-              style: AppFonts.of(context, 
+              style: AppFonts.of(
+                context,
                 fontWeight: FontWeight.w700,
                 color: isDark ? Colors.white : AppConstants.textPrimary,
               ),
@@ -115,7 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       dayName,
-                      style: AppFonts.of(context, 
+                      style: AppFonts.of(
+                        context,
                         fontSize: 30,
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -123,7 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Text(
                       '$monthName ${now.day}, ${now.year}',
-                      style: AppFonts.of(context, 
+                      style: AppFonts.of(
+                        context,
                         fontSize: 15,
                         color: isDark
                             ? Colors.white54
@@ -134,7 +171,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+
+              // ── Daily progress bar ──
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Consumer<TaskProvider>(
+                  builder: (_, provider, __) {
+                    final total = provider.totalTasks;
+                    final completed = provider.completedTasks;
+                    final progress = total > 0 ? completed / total : 0.0;
+                    return _DailyProgressBar(
+                      progress: progress,
+                      completed: completed,
+                      total: total,
+                      isDark: isDark,
+                      lang: lang,
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
 
               // ── Greeting card (animated by time of day) ──
               Padding(
@@ -217,7 +274,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 12),
                             Text(
                               AppLocalizations.tr('no_tasks_yet', lang),
-                              style: AppFonts.of(context, 
+                              style: AppFonts.of(
+                                context,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: isDark
@@ -228,7 +286,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(height: 4),
                             Text(
                               AppLocalizations.tr('tap_to_create', lang),
-                              style: AppFonts.of(context, 
+                              style: AppFonts.of(
+                                context,
                                 fontSize: 13,
                                 color: isDark
                                     ? Colors.white54
@@ -348,17 +407,14 @@ class _StatBubble extends StatelessWidget {
             borderRadius: 16,
             padding: const EdgeInsets.symmetric(vertical: 18),
             child: Center(
-              child: Icon(
-                icon,
-                size: 28,
-                color: isDark ? Colors.white : color,
-              ),
+              child: Icon(icon, size: 28, color: isDark ? Colors.white : color),
             ),
           ),
           const SizedBox(height: 6),
           Text(
             value,
-            style: AppFonts.of(context, 
+            style: AppFonts.of(
+              context,
               fontSize: 20,
               fontWeight: FontWeight.w700,
               color: isDark ? Colors.white : AppConstants.textPrimary,
@@ -366,7 +422,8 @@ class _StatBubble extends StatelessWidget {
           ),
           Text(
             label,
-            style: AppFonts.of(context, 
+            style: AppFonts.of(
+              context,
               fontSize: 11,
               color: isDark ? Colors.white70 : AppConstants.textSecondary,
             ),
@@ -405,7 +462,8 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             title,
-            style: AppFonts.of(context, 
+            style: AppFonts.of(
+              context,
               fontSize: 12,
               fontWeight: FontWeight.w700,
               color: isDark ? Colors.white54 : AppConstants.textSecondary,
@@ -421,7 +479,8 @@ class _SectionHeader extends StatelessWidget {
             ),
             child: Text(
               '$count',
-              style: AppFonts.of(context, 
+              style: AppFonts.of(
+                context,
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: AppConstants.primaryDark,
@@ -601,7 +660,8 @@ class _MiniTaskTile extends StatelessWidget {
                       children: [
                         Text(
                           task.title,
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: isCompleted
@@ -618,7 +678,8 @@ class _MiniTaskTile extends StatelessWidget {
                         if (task.dueDate != null)
                           Text(
                             _shortDate(task.dueDate),
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 12,
                               color: isDark
                                   ? Colors.white38
@@ -687,15 +748,28 @@ class _GreetingCard extends StatefulWidget {
 }
 
 class _GreetingCardState extends State<_GreetingCard>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController _controller;
   late Animation<double> _floatAnim;
   late Animation<double> _fadeAnim;
   late Animation<double> _glowAnim;
+  Timer? _timeCheckTimer;
+  int _lastHour = DateTime.now().hour;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Re-evaluate the time theme every 30 seconds so icon/gradient stay current
+    _timeCheckTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+      final currentHour = DateTime.now().hour;
+      if (currentHour != _lastHour) {
+        _lastHour = currentHour;
+        if (mounted) setState(() {});
+      }
+    });
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3),
@@ -716,7 +790,20 @@ class _GreetingCardState extends State<_GreetingCard>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final currentHour = DateTime.now().hour;
+      if (currentHour != _lastHour) {
+        _lastHour = currentHour;
+        if (mounted) setState(() {});
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timeCheckTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -803,7 +890,8 @@ class _GreetingCardState extends State<_GreetingCard>
                     children: [
                       Text(
                         '${widget.greeting}, ${widget.userName}!',
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                           color: Colors.white,
@@ -812,19 +900,22 @@ class _GreetingCardState extends State<_GreetingCard>
                       const SizedBox(height: 6),
                       Text(
                         widget.subtitle,
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 14,
                           color: Colors.white70,
                         ),
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 14),
                       SizedBox(
-                        height: 42,
+                        height: 36,
                         child: ElevatedButton.icon(
-                          icon: const Icon(Icons.add_rounded, size: 20),
+                          icon: const Icon(Icons.add_rounded, size: 18),
                           label: Text(
                             widget.buttonLabel,
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
+                              fontSize: 13,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -832,6 +923,7 @@ class _GreetingCardState extends State<_GreetingCard>
                             backgroundColor: Colors.white,
                             foregroundColor: theme.buttonFg,
                             elevation: 0,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             shape: const StadiumBorder(),
                           ),
                           onPressed: widget.onNewTask,
@@ -853,6 +945,113 @@ class _GreetingCardState extends State<_GreetingCard>
           ),
         );
       },
+    );
+  }
+}
+
+// ── Compact daily progress bar ──
+class _DailyProgressBar extends StatelessWidget {
+  final double progress;
+  final int completed;
+  final int total;
+  final bool isDark;
+  final String lang;
+
+  const _DailyProgressBar({
+    required this.progress,
+    required this.completed,
+    required this.total,
+    required this.isDark,
+    required this.lang,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = (progress * 100).round();
+    final barBg = isDark
+        ? Colors.white.withValues(alpha: 0.08)
+        : AppConstants.primaryColor.withValues(alpha: 0.10);
+    final barFg = AppConstants.primaryColor;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.grey.shade200,
+        ),
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.trending_up_rounded, size: 18, color: barFg),
+              const SizedBox(width: 6),
+              Text(
+                AppLocalizations.tr('Daily progress', lang),
+                style: AppFonts.of(
+                  context,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? Colors.white70 : AppConstants.textSecondary,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '$completed / $total',
+                style: AppFonts.of(
+                  context,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? Colors.white : AppConstants.textPrimary,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '($pct%)',
+                style: AppFonts.of(
+                  context,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: barFg,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: SizedBox(
+              height: 8,
+              child: TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0, end: progress),
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.easeOutCubic,
+                builder: (context, value, _) {
+                  return LinearProgressIndicator(
+                    value: value,
+                    backgroundColor: barBg,
+                    valueColor: AlwaysStoppedAnimation<Color>(barFg),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

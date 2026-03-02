@@ -89,7 +89,8 @@ class TaskCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 s.$2,
-                style: AppFonts.of(context, 
+                style: AppFonts.of(
+                  context,
                   fontSize: 13,
                   fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                   color: isActive ? s.$4 : null,
@@ -167,14 +168,11 @@ class TaskCard extends StatelessWidget {
                         ),
                         child: Text(
                           _shortDate(task.dueDate),
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: task.isOverdue
-                                ? AppConstants.errorColor
-                                : (isDark
-                                      ? Colors.white
-                                      : AppConstants.textSecondary),
+                            color: AppConstants.errorColor,
                           ),
                         ),
                       ),
@@ -186,7 +184,8 @@ class TaskCard extends StatelessWidget {
                 // ── Title ──
                 Text(
                   task.title,
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     height: 1.25,
@@ -220,7 +219,8 @@ class TaskCard extends StatelessWidget {
                       ),
                       child: Text(
                         AppConstants.categoryLabel(task.category),
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: isDark
@@ -262,7 +262,8 @@ class TaskCard extends StatelessWidget {
                             const SizedBox(width: 6),
                             Text(
                               task.statusLabel,
-                              style: AppFonts.of(context, 
+                              style: AppFonts.of(
+                                context,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: isDark

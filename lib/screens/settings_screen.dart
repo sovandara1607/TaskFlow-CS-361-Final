@@ -8,6 +8,7 @@ import '../services/task_provider.dart';
 import '../services/notification_service.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
+import '../utils/alert_helper.dart';
 import '../widgets/glass_container.dart';
 
 /// Settings Screen — All toggles wired to AppSettingsProvider for persistence.
@@ -24,7 +25,8 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           AppLocalizations.tr('settings', lang),
-          style: AppFonts.of(context, 
+          style: AppFonts.of(
+            context,
             fontWeight: FontWeight.w700,
             color: isDark ? Colors.white : AppConstants.textPrimary,
           ),
@@ -49,21 +51,29 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('dark_mode', lang),
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
                 ),
                 subtitle: Text(
                   AppLocalizations.tr('use_dark_theme', lang),
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontSize: 12,
                     color: isDark ? Colors.white54 : AppConstants.textSecondary,
                   ),
                 ),
                 value: settings.themeMode == ThemeMode.dark,
                 activeTrackColor: AppConstants.primaryColor,
-                onChanged: (v) => settings.toggleDarkMode(v),
+                onChanged: (v) {
+                  settings.toggleDarkMode(v);
+                  AlertHelper.showInfo(
+                    context,
+                    v ? 'Dark mode enabled' : 'Dark mode disabled',
+                  );
+                },
               ),
               Divider(
                 height: 1,
@@ -78,7 +88,8 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('language', lang),
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -89,7 +100,8 @@ class SettingsScreen extends StatelessWidget {
                   dropdownColor: isDark
                       ? AppConstants.glassDialogDark
                       : AppConstants.glassDialogLight,
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontSize: 14,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -102,7 +114,13 @@ class SettingsScreen extends StatelessWidget {
                       )
                       .toList(),
                   onChanged: (v) {
-                    if (v != null) settings.setLocale(v);
+                    if (v != null) {
+                      settings.setLocale(v);
+                      AlertHelper.showInfo(
+                        context,
+                        'Language changed to ${AppLocalizations.localeName(v)}',
+                      );
+                    }
                   },
                 ),
               ),
@@ -126,7 +144,8 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('push_notifications', lang),
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -146,6 +165,14 @@ class SettingsScreen extends StatelessWidget {
                   } else {
                     // Cancel all notifications
                     await NotificationService.instance.cancelAll();
+                  }
+                  if (context.mounted) {
+                    AlertHelper.showInfo(
+                      context,
+                      newValue
+                          ? 'Notifications enabled'
+                          : 'Notifications disabled',
+                    );
                   }
                 },
               ),
@@ -175,7 +202,8 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 title: Text(
                   AppLocalizations.tr('privacy_policy', lang),
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w500,
                     color: isDark ? Colors.white : AppConstants.textPrimary,
                   ),
@@ -198,7 +226,8 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       title: Text(
                         '${AppLocalizations.tr('privacy_policy', lang)}',
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontWeight: FontWeight.w700,
                           color: isDark
                               ? Colors.white
@@ -209,7 +238,8 @@ class SettingsScreen extends StatelessWidget {
                         'Your privacy is important to us. TaskFlow does not '
                         'collect personal data beyond what is needed for '
                         'functionality. All data is transmitted securely.',
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           color: isDark
                               ? Colors.white54
                               : AppConstants.textSecondary,
@@ -221,7 +251,8 @@ class SettingsScreen extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                           child: Text(
                             AppLocalizations.tr('close', lang),
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               color: AppConstants.primaryColor,
                               fontWeight: FontWeight.w600,
                             ),
@@ -242,7 +273,8 @@ class SettingsScreen extends StatelessWidget {
               children: [
                 Text(
                   '${AppConstants.appName} v1.0.0',
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: isDark ? Colors.white54 : AppConstants.textSecondary,
@@ -251,7 +283,7 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 4),
                 // Text(
                 //   'CS361 — Mobile App Development',
-                //   style: AppFonts.of(context, 
+                //   style: AppFonts.of(context,
                 //     fontSize: 12,
                 //     color: isDark ? Colors.white38 : AppConstants.textLight,
                 //   ),
@@ -273,7 +305,8 @@ class SettingsScreen extends StatelessWidget {
               ),
               label: Text(
                 AppLocalizations.tr('log_out', lang),
-                style: AppFonts.of(context, 
+                style: AppFonts.of(
+                  context,
                   color: const Color(0xFFFF6B6B),
                   fontWeight: FontWeight.w600,
                 ),
@@ -298,14 +331,16 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     title: Text(
                       '${AppLocalizations.tr('log_out', lang)}',
-                      style: AppFonts.of(context, 
+                      style: AppFonts.of(
+                        context,
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : AppConstants.textPrimary,
                       ),
                     ),
                     content: Text(
                       AppLocalizations.tr('confirm_logout', lang),
-                      style: AppFonts.of(context, 
+                      style: AppFonts.of(
+                        context,
                         color: isDark
                             ? Colors.white54
                             : AppConstants.textSecondary,
@@ -316,7 +351,8 @@ class SettingsScreen extends StatelessWidget {
                         onPressed: () => Navigator.pop(context),
                         child: Text(
                           AppLocalizations.tr('cancel', lang),
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             color: isDark
                                 ? Colors.white54
                                 : AppConstants.textSecondary,
@@ -337,6 +373,10 @@ class SettingsScreen extends StatelessWidget {
                           await auth.logout();
                           ApiService.setToken(null);
                           if (context.mounted) {
+                            AlertHelper.showInfo(
+                              context,
+                              'You have been logged out',
+                            );
                             Navigator.pushNamedAndRemoveUntil(
                               context,
                               '/login',
@@ -346,7 +386,8 @@ class SettingsScreen extends StatelessWidget {
                         },
                         child: Text(
                           AppLocalizations.tr('log_out', lang),
-                          style: AppFonts.of(context, 
+                          style: AppFonts.of(
+                            context,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -407,7 +448,8 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             title,
-            style: AppFonts.of(context, 
+            style: AppFonts.of(
+              context,
               fontSize: 12,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,

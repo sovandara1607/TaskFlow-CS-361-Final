@@ -24,7 +24,7 @@
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Overview](#-overview)
 - [Key Features](#-key-features)
@@ -48,7 +48,7 @@
 
 ---
 
-## 🔍 Overview
+##  Overview
 
 **TaskFlow** is a cross-platform task management application built with a modern mobile-first approach. The project demonstrates end-to-end software engineering — from designing a RESTful API with Laravel Sanctum authentication to implementing a responsive, animated Flutter client with Provider-based state management.
 
@@ -56,9 +56,9 @@ The app empowers users to organize their daily tasks across five customizable ca
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 🗂 Task Management (Full CRUD)
+###  Task Management (Full CRUD)
 - **Create** tasks with title, description, due date, category, and status
 - **Read** tasks with filtering by status (`Pending`, `In Progress`, `Completed`) and category (`General`, `School`, `Work`, `Home`, `Personal`)
 - **Update** tasks inline with pre-populated edit forms or quick-change status via popup menu
@@ -66,7 +66,7 @@ The app empowers users to organize their daily tasks across five customizable ca
 - **Toggle** task completion with swipe-to-complete gestures
 - **Search** tasks by title or description in real time
 
-### 🔐 Authentication & Security
+###  Authentication & Security
 - Email/password registration and login via **Laravel Sanctum** (token-based)
 - **GitHub OAuth** sign-in with deep link callback (`taskflow://auth`)
 - Auto-login with persisted tokens via `SharedPreferences`
@@ -74,7 +74,7 @@ The app empowers users to organize their daily tasks across five customizable ca
 - Profile editing (username, email, phone) synced to server
 - Biometric authentication toggle (extensible via `local_auth`)
 
-### 🎨 UI/UX — Liquid Glass Design System
+###  UI/UX — Liquid Glass Design System
 - **Liquid-glass aesthetic** — pervasive use of `BackdropFilter` blur (σ = 12–40) with translucent gradient fills across navigation bars, drawers, cards, dialogs, and text fields
 - **Coral 3-D FAB** — radial gradient floating action button with a custom dashed-ring `CustomPainter`
 - **Animated greeting card** — time-of-day adaptive gradients (morning sun → afternoon sky → evening twilight → night moon) with a continuously bobbing icon animation
@@ -83,25 +83,25 @@ The app empowers users to organize their daily tasks across five customizable ca
 - Smooth animations: splash fade/scale, card transitions, selected-tab pill expansion
 - Responsive layout adapting to different screen sizes
 
-### 🌍 Internationalization
+### Internationalization
 - Bilingual support: **English** and **Khmer** (ភាសាខ្មែរ)
 - **93 translated UI strings** per locale with runtime locale switching
 - Custom in-app localization engine (no build-time code generation required)
 - Locale-aware font family switching (Poppins ↔ Kantumruy Pro)
 
-### 📊 Dashboard & Analytics
+###  Dashboard & Analytics
 - Today view with time-of-day aware greeting (Morning / Afternoon / Evening / Night)
 - Real-time task statistics in glass bubbles: Total, Pending, Active, Done
 - Task lists grouped by status with section headers and counts
 - Swipe-to-complete and swipe-to-delete directly from the dashboard
 - Pull-to-refresh for live data sync
 
-### 🔔 Dual Notification System
+###  Dual Notification System
 - **Server-side notifications** — Laravel creates records on task creation, task completion, login, and profile updates; displayed in a dedicated Notifications tab with unread badges
 - **Client-side local reminders** — `flutter_local_notifications` schedules reminders at 8:00 AM on task due dates; fires immediately for overdue tasks
 - Mark as read, mark all as read, swipe-to-dismiss, and clear all
 
-### ⚙️ Settings & Preferences
+###  Settings & Preferences
 - Dark mode toggle with system-wide theme propagation
 - Language selector (EN/KM) with instant UI refresh
 - Push notification toggle (re-schedules or cancels all local reminders)
@@ -111,7 +111,7 @@ The app empowers users to organize their daily tasks across five customizable ca
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Layer | Technology | Purpose |
 |:---:|:---|:---|
@@ -129,7 +129,7 @@ The app empowers users to organize their daily tasks across five customizable ca
 
 ---
 
-## 🏗 Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -236,7 +236,7 @@ taskflow/
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -267,7 +267,7 @@ php artisan key:generate
 #    DB_HOST=127.0.0.1
 #    DB_PORT=3306
 #    DB_DATABASE=taskflow
-#    DB_USERNAME=root
+#    DB_USERNAME=
 #    DB_PASSWORD=
 
 # 5. Configure GitHub OAuth in .env (optional)
@@ -309,7 +309,7 @@ flutter build web              # Web deployment
 
 ---
 
-## 📡 API Reference
+##  API Reference
 
 > **Base URL:** `http://127.0.0.1:8000/api`
 > **Authentication:** Bearer Token (Laravel Sanctum)
@@ -416,7 +416,7 @@ flutter build web              # Web deployment
 
 ---
 
-## 🗄 Database Schema
+##  Database Schema
 
 ### Users Table
 | Column | Type | Constraints |
@@ -461,7 +461,7 @@ flutter build web              # Web deployment
 
 ---
 
-## 🔑 Authentication Flow
+##  Authentication Flow
 
 ### Email/Password Authentication
 ```
@@ -503,7 +503,7 @@ App Launch → SplashScreen (2.5s animated splash)
 
 ---
 
-## 🖥 Screens & UI
+##  Screens & UI
 
 ### Navigation Structure
 
@@ -549,7 +549,7 @@ The app uses a **4-tab liquid-glass bottom navigation bar** with a floating cora
 
 ---
 
-## 🧩 State Management
+##  State Management
 
 TaskFlow uses **Provider** with `ChangeNotifier` for reactive state management across four providers:
 
@@ -564,7 +564,7 @@ All providers are injected at the root via `MultiProvider` and consumed with `co
 
 ---
 
-## 🌐 Localization
+##  Localization
 
 TaskFlow supports full bilingual UI localization:
 
@@ -579,7 +579,7 @@ Language can be switched at runtime from **Settings → Language** and is persis
 
 ---
 
-## 🔔 Notification System
+##  Notification System
 
 TaskFlow implements a **dual notification architecture**:
 
@@ -606,7 +606,7 @@ The Flutter app schedules **local reminders** via `flutter_local_notifications`:
 
 ---
 
-## 📦 Dependencies
+##  Dependencies
 
 ### Flutter (Frontend)
 
@@ -638,7 +638,7 @@ The Flutter app schedules **local reminders** via `flutter_local_notifications`:
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 Contributions are welcome! To contribute:
 
@@ -652,7 +652,7 @@ Please follow the [Conventional Commits](https://www.conventionalcommits.org/) s
 
 ---
 
-## 📄 License
+##  License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
@@ -660,7 +660,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 
 <div align="center">
 
-**Built with ❤️ using Flutter & Laravel**
+**Built using Flutter & Laravel**
 
 *TaskFlow — Organize your life, one task at a time.*
 

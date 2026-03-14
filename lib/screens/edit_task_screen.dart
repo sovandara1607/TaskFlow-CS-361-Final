@@ -225,7 +225,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                   controller: _titleCtrl,
                                   validator: Validators.minLength3,
                                   style: AppFonts.of(context, 
-                                    color: Colors.white,
+                                    color: Colors.black87,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),

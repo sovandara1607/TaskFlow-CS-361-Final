@@ -297,17 +297,17 @@ class _CoralFAB extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        width: 72,
-        height: 72,
+        width: 80,
+        height: 80,
         child: Stack(
           alignment: Alignment.center,
           children: [
             // ── Dashed ring ──
             CustomPaint(
-              size: const Size(72, 72),
+              size: const Size(80, 80),
               painter: _DashedCirclePainter(
                 color: isDark
-                    ? const Color(0xFFFF6B6B).withValues(alpha: 0.25)
+                    ? const Color.fromARGB(255, 230, 96, 96).withValues(alpha: 0.25)
                     : const Color(0xFFFF6B6B).withValues(alpha: 0.18),
                 strokeWidth: 1.5,
                 dashCount: 28,
@@ -315,8 +315,8 @@ class _CoralFAB extends StatelessWidget {
             ),
             // ── 3-D coral ball ──
             Container(
-              width: 58,
-              height: 58,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: const RadialGradient(

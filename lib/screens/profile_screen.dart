@@ -209,7 +209,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       gradient: const LinearGradient(
                         colors: [
                           AppConstants.primaryLight,
-                          AppConstants.accentSky,
+                          AppConstants.primaryColor,
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,

@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 4500),
     );
     _fadeIn = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _scale = Tween<double>(

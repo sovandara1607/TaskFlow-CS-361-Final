@@ -19,7 +19,6 @@ class AuthController extends Controller
     {
         $this->notificationService = $notificationService;
     }
-
     /**
      * POST /api/register
      */
@@ -28,17 +27,15 @@ class AuthController extends Controller
         $validated = $request->validate([
             'username' => 'required|string|max:255',
             'email'    => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
-
         $user = User::create([
             'username' => $validated['username'],
             'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
-
         $token = $user->createToken('auth_token')->plainTextToken;
-
+        
         return response()->json([
             'success' => true,
             'message' => 'Registration successful',
@@ -48,7 +45,6 @@ class AuthController extends Controller
             ],
         ], 201);
     }
-
     /**
      * POST /api/login
      */
@@ -58,7 +54,6 @@ class AuthController extends Controller
             'email'    => 'required|string|email',
             'password' => 'required|string',
         ]);
-
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
@@ -75,7 +70,6 @@ class AuthController extends Controller
             $request->ip(),
             $request->userAgent()
         );
-
         return response()->json([
             'success' => true,
             'message' => 'Login successful',

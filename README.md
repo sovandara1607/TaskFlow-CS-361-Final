@@ -50,7 +50,7 @@
 
 ##  Overview
 
-**TaskFlow** is a cross-platform task management application built with a modern mobile-first approach. The project demonstrates end-to-end software engineering — from designing a RESTful API with Laravel Sanctum authentication to implementing a responsive, animated Flutter client with Provider-based state management.
+**TaskFlow** is a cross-platform task management application built with a modern mobile-first approach. The project demonstrates end-to-end software engineering from designing a RESTful API with Laravel Sanctum authentication to implementing a responsive, animated Flutter client with Provider-based state management.
 
 The app empowers users to organize their daily tasks across five customizable categories, track progress with real-time statistics on a time-of-day-aware dashboard, and stay on top of deadlines with a dual notification system (server-side event notifications + client-side local reminders) — all wrapped in a signature **liquid-glass** design language with pervasive backdrop blur, translucent gradients, and 3-D floating elements.
 
@@ -68,14 +68,13 @@ The app empowers users to organize their daily tasks across five customizable ca
 
 ###  Authentication & Security
 - Email/password registration and login via **Laravel Sanctum** (token-based)
-- **GitHub OAuth** sign-in with deep link callback (`taskflow://auth`)
+- **GitHub OAuth** sign-in with link callback (`taskflow://auth`)
 - Auto-login with persisted tokens via `SharedPreferences`
 - Token-scoped API — all task and notification data is isolated per authenticated user
 - Profile editing (username, email, phone) synced to server
-- Biometric authentication toggle (extensible via `local_auth`)
 
 ###  UI/UX — Liquid Glass Design System
-- **Liquid-glass aesthetic** — pervasive use of `BackdropFilter` blur (σ = 12–40) with translucent gradient fills across navigation bars, drawers, cards, dialogs, and text fields
+
 - **Coral 3-D FAB** — radial gradient floating action button with a custom dashed-ring `CustomPainter`
 - **Animated greeting card** — time-of-day adaptive gradients (morning sun → afternoon sky → evening twilight → night moon) with a continuously bobbing icon animation
 - **Material 3** with `colorSchemeSeed` and full light/dark theme support
@@ -85,8 +84,6 @@ The app empowers users to organize their daily tasks across five customizable ca
 
 ### Internationalization
 - Bilingual support: **English** and **Khmer** (ភាសាខ្មែរ)
-- **93 translated UI strings** per locale with runtime locale switching
-- Custom in-app localization engine (no build-time code generation required)
 - Locale-aware font family switching (Poppins ↔ Kantumruy Pro)
 
 ###  Dashboard & Analytics
@@ -96,7 +93,7 @@ The app empowers users to organize their daily tasks across five customizable ca
 - Swipe-to-complete and swipe-to-delete directly from the dashboard
 - Pull-to-refresh for live data sync
 
-###  Dual Notification System
+### Notification System
 - **Server-side notifications** — Laravel creates records on task creation, task completion, login, and profile updates; displayed in a dedicated Notifications tab with unread badges
 - **Client-side local reminders** — `flutter_local_notifications` schedules reminders at 8:00 AM on task due dates; fires immediately for overdue tasks
 - Mark as read, mark all as read, swipe-to-dismiss, and clear all
@@ -168,7 +165,7 @@ The app empowers users to organize their daily tasks across five customizable ca
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 taskflow/

@@ -1,0 +1,846 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-03-15T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2026.1.0",
+  "resources": [
+    {
+      "_id": "wrk_taskflow_cs361",
+      "_type": "workspace",
+      "name": "TaskFlow API - All Endpoints",
+      "description": "Complete endpoint collection for TaskFlow Laravel API",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_taskflow_base",
+      "_type": "environment",
+      "parentId": "wrk_taskflow_cs361",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://127.0.0.1:8000",
+        "token": "",
+        "task_id": 1,
+        "notification_id": 1,
+        "storage_path": "example.txt",
+        "github_access_token": "",
+        "github_code": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "token",
+          "task_id",
+          "notification_id",
+          "storage_path",
+          "github_access_token",
+          "github_code"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 0
+    },
+    {
+      "_id": "fld_auth",
+      "_type": "request_group",
+      "parentId": "wrk_taskflow_cs361",
+      "name": "Auth (Public)",
+      "description": "Public authentication endpoints",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1000
+    },
+    {
+      "_id": "fld_user",
+      "_type": "request_group",
+      "parentId": "wrk_taskflow_cs361",
+      "name": "User (Protected)",
+      "description": "Requires Authorization: Bearer {{ _.token }}",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -900
+    },
+    {
+      "_id": "fld_tasks",
+      "_type": "request_group",
+      "parentId": "wrk_taskflow_cs361",
+      "name": "Tasks (Protected)",
+      "description": "Task CRUD endpoints",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -800
+    },
+    {
+      "_id": "fld_notifications",
+      "_type": "request_group",
+      "parentId": "wrk_taskflow_cs361",
+      "name": "Notifications (Protected)",
+      "description": "Notification endpoints",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -700
+    },
+    {
+      "_id": "fld_system",
+      "_type": "request_group",
+      "parentId": "wrk_taskflow_cs361",
+      "name": "System and Web Routes",
+      "description": "Non-API routes also present in route:list",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -600
+    },
+
+    {
+      "_id": "req_register",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Register",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/register",
+      "description": "Create a new user account",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"username\": \"demo_user\",\n  \"email\": \"demo@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1001,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_login",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "Login",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/login",
+      "description": "Login and receive Sanctum token",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"demo@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1002,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_auth_github",
+      "_type": "request",
+      "parentId": "fld_auth",
+      "name": "GitHub Login (Access Token)",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/auth/github",
+      "description": "Login/register using GitHub OAuth access token",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"access_token\": \"{{ _.github_access_token }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1003,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+
+    {
+      "_id": "req_user_get",
+      "_type": "request",
+      "parentId": "fld_user",
+      "name": "Get Authenticated User",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/user",
+      "description": "Get current authenticated user profile",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -901,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_user_put",
+      "_type": "request",
+      "parentId": "fld_user",
+      "name": "Update User Profile",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/user",
+      "description": "Update user profile fields",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"username\": \"updated_user\",\n  \"email\": \"updated@example.com\",\n  \"phone\": \"+15551234567\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -902,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_logout",
+      "_type": "request",
+      "parentId": "fld_user",
+      "name": "Logout",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/logout",
+      "description": "Invalidate current access token",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -903,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+
+    {
+      "_id": "req_tasks_get_all",
+      "_type": "request",
+      "parentId": "fld_tasks",
+      "name": "List Tasks",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/tasks",
+      "description": "Fetch all tasks for authenticated user",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -801,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_tasks_create",
+      "_type": "request",
+      "parentId": "fld_tasks",
+      "name": "Create Task",
+      "method": "POST",
+      "url": "{{ _.base_url }}/api/tasks",
+      "description": "Create a new task",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Finish CS361 final\",\n  \"description\": \"Complete API + UI integration\",\n  \"status\": \"pending\",\n  \"due_date\": \"2026-03-20\",\n  \"category\": \"school\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -802,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_tasks_get_one",
+      "_type": "request",
+      "parentId": "fld_tasks",
+      "name": "Get Task By ID",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/tasks/{{ _.task_id }}",
+      "description": "Fetch a single task",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -803,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_tasks_update",
+      "_type": "request",
+      "parentId": "fld_tasks",
+      "name": "Update Task By ID",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/tasks/{{ _.task_id }}",
+      "description": "Update an existing task",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"title\": \"Finish CS361 final report\",\n  \"description\": \"Update and submit final deliverables\",\n  \"status\": \"in_progress\",\n  \"due_date\": \"2026-03-21\",\n  \"category\": \"school\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -804,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_tasks_delete",
+      "_type": "request",
+      "parentId": "fld_tasks",
+      "name": "Delete Task By ID",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/tasks/{{ _.task_id }}",
+      "description": "Delete task by ID",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -805,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+
+    {
+      "_id": "req_notifs_get_all",
+      "_type": "request",
+      "parentId": "fld_notifications",
+      "name": "List Notifications",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/notifications",
+      "description": "Get all notifications",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -701,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_notifs_unread_count",
+      "_type": "request",
+      "parentId": "fld_notifications",
+      "name": "Unread Notification Count",
+      "method": "GET",
+      "url": "{{ _.base_url }}/api/notifications/unread-count",
+      "description": "Get unread notification count",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -702,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_notifs_read_all",
+      "_type": "request",
+      "parentId": "fld_notifications",
+      "name": "Mark All Notifications Read",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/notifications/read-all",
+      "description": "Mark every unread notification as read",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -703,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_notifs_read_one",
+      "_type": "request",
+      "parentId": "fld_notifications",
+      "name": "Mark Notification Read By ID",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/api/notifications/{{ _.notification_id }}/read",
+      "description": "Mark a single notification as read",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -704,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_notifs_delete_one",
+      "_type": "request",
+      "parentId": "fld_notifications",
+      "name": "Delete Notification By ID",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/notifications/{{ _.notification_id }}",
+      "description": "Delete one notification",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -705,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_notifs_delete_all",
+      "_type": "request",
+      "parentId": "fld_notifications",
+      "name": "Delete All Notifications",
+      "method": "DELETE",
+      "url": "{{ _.base_url }}/api/notifications",
+      "description": "Delete all notifications",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ _.token }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -706,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+
+    {
+      "_id": "req_web_root",
+      "_type": "request",
+      "parentId": "fld_system",
+      "name": "Web Root",
+      "method": "GET",
+      "url": "{{ _.base_url }}/",
+      "description": "Laravel welcome route",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -601,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_web_github_redirect",
+      "_type": "request",
+      "parentId": "fld_system",
+      "name": "GitHub OAuth Redirect (Web)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/auth/github/redirect",
+      "description": "Initiate GitHub OAuth in browser flow",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -602,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_web_github_callback",
+      "_type": "request",
+      "parentId": "fld_system",
+      "name": "GitHub OAuth Callback (Web)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/login/oauth2/code/github?code={{ _.github_code }}",
+      "description": "Callback route typically called by GitHub with code query param",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -603,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_system_csrf",
+      "_type": "request",
+      "parentId": "fld_system",
+      "name": "Sanctum CSRF Cookie",
+      "method": "GET",
+      "url": "{{ _.base_url }}/sanctum/csrf-cookie",
+      "description": "Get CSRF cookie (mainly for SPA cookie auth flow)",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -604,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_system_storage_get",
+      "_type": "request",
+      "parentId": "fld_system",
+      "name": "Storage GET",
+      "method": "GET",
+      "url": "{{ _.base_url }}/storage/{{ _.storage_path }}",
+      "description": "Read file from local storage route",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -605,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_system_storage_put",
+      "_type": "request",
+      "parentId": "fld_system",
+      "name": "Storage PUT",
+      "method": "PUT",
+      "url": "{{ _.base_url }}/storage/{{ _.storage_path }}",
+      "description": "Upload or overwrite file at local storage route",
+      "body": {
+        "mimeType": "text/plain",
+        "text": "hello from insomnia"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "text/plain"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -606,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    },
+    {
+      "_id": "req_system_health",
+      "_type": "request",
+      "parentId": "fld_system",
+      "name": "Health Check (/up)",
+      "method": "GET",
+      "url": "{{ _.base_url }}/up",
+      "description": "Laravel health check endpoint",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -607,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "settingCookies": [],
+      "settingDisableCookieJar": false,
+      "settingDisableInterception": false,
+      "settingStoreUrlParams": true,
+      "settingPostmanPreview": false
+    }
+  ]
+}

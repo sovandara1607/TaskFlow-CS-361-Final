@@ -7,6 +7,7 @@ use App\Models\Task;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
@@ -25,6 +26,7 @@ class TaskController extends Controller
    {
       $tasks = $request->user()
          ->tasks()
+         ->orderByRaw('scheduled_at IS NULL, scheduled_at ASC')
          ->orderBy('created_at', 'desc')
          ->get();
 
@@ -36,24 +38,64 @@ class TaskController extends Controller
    }
 
    /**
+    * GET /api/tasks/scheduled?filter=today|upcoming|overdue
+    */
+   public function scheduled(Request $request): JsonResponse
+   {
+      $filter = $request->query('filter', 'today');
+      $now    = Carbon::now();
+      $query  = $request->user()->tasks();
+
+      switch ($filter) {
+         case 'today':
+            $query->whereDate('scheduled_at', $now->toDateString())
+                  ->orderBy('scheduled_at', 'asc');
+            break;
+         case 'upcoming':
+            $query->where('scheduled_at', '>', $now)
+                  ->where('status', '!=', 'completed')
+                  ->orderBy('scheduled_at', 'asc');
+            break;
+         case 'overdue':
+            $query->where('scheduled_at', '<', $now)
+                  ->where('status', '!=', 'completed')
+                  ->orderBy('scheduled_at', 'desc');
+            break;
+         default:
+            $query->whereNotNull('scheduled_at')
+                  ->orderBy('scheduled_at', 'asc');
+      }
+
+      return response()->json([
+         'success' => true,
+         'message' => 'Scheduled tasks retrieved',
+         'data'    => $query->get(),
+      ], 200);
+   }
+
+   /**
     * POST /api/tasks
     */
    public function store(Request $request): JsonResponse
    {
       $validated = $request->validate([
-         'title'       => 'required|string|max:255',
-         'description' => 'nullable|string',
-         'status'      => 'nullable|string|in:pending,in_progress,completed',
-         'due_date'    => 'nullable|date',
-         'category'    => 'nullable|string|in:general,school,work,home,personal',
+         'title'            => 'required|string|max:255',
+         'description'      => 'nullable|string',
+         'status'           => 'nullable|string|in:pending,in_progress,completed',
+         'due_date'         => 'nullable|date',
+         'category'         => 'nullable|string|in:general,school,work,home,personal',
+         'scheduled_at'     => 'nullable|date',
+         'reminder_minutes' => 'nullable|integer|min:0|max:1440',
       ]);
 
       $task = $request->user()->tasks()->create([
-         'title'       => $validated['title'],
-         'description' => $validated['description'] ?? '',
-         'status'      => $validated['status'] ?? 'pending',
-         'due_date'    => $validated['due_date'] ?? null,
-         'category'    => $validated['category'] ?? 'general',
+         'title'            => $validated['title'],
+         'description'      => $validated['description'] ?? '',
+         'status'           => $validated['status'] ?? 'pending',
+         'due_date'         => $validated['due_date'] ?? null,
+         'category'         => $validated['category'] ?? 'general',
+         'scheduled_at'     => $validated['scheduled_at'] ?? null,
+         'reminder_minutes' => $validated['reminder_minutes'] ?? 15,
       ]);
 
       // Dispatch notification for task creation
@@ -108,19 +150,23 @@ class TaskController extends Controller
       $oldStatus = $task->status;
 
       $validated = $request->validate([
-         'title'       => 'required|string|max:255',
-         'description' => 'nullable|string',
-         'status'      => 'nullable|string|in:pending,in_progress,completed',
-         'due_date'    => 'nullable|date',
-         'category'    => 'nullable|string|in:general,school,work,home,personal',
+         'title'            => 'required|string|max:255',
+         'description'      => 'nullable|string',
+         'status'           => 'nullable|string|in:pending,in_progress,completed',
+         'due_date'         => 'nullable|date',
+         'category'         => 'nullable|string|in:general,school,work,home,personal',
+         'scheduled_at'     => 'nullable|date',
+         'reminder_minutes' => 'nullable|integer|min:0|max:1440',
       ]);
 
       $task->update([
-         'title'       => $validated['title'],
-         'description' => $validated['description'] ?? $task->description,
-         'status'      => $validated['status'] ?? $task->status,
-         'due_date'    => $validated['due_date'] ?? $task->due_date,
-         'category'    => $validated['category'] ?? $task->category,
+         'title'            => $validated['title'],
+         'description'      => $validated['description'] ?? $task->description,
+         'status'           => $validated['status'] ?? $task->status,
+         'due_date'         => $validated['due_date'] ?? $task->due_date,
+         'category'         => $validated['category'] ?? $task->category,
+         'scheduled_at'     => $validated['scheduled_at'] ?? $task->scheduled_at,
+         'reminder_minutes' => $validated['reminder_minutes'] ?? $task->reminder_minutes,
       ]);
 
       // Dispatch notification when task is marked completed

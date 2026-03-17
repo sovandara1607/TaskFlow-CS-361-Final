@@ -24,14 +24,18 @@ class Task extends Model
       'due_date',
       'category',
       'user_id',
+      'scheduled_at',
+      'reminder_minutes',
    ];
 
    /**
     * The attributes that should be cast.
     */
    protected $casts = [
-      'due_date'   => 'date',
-      'created_at' => 'datetime',
-      'updated_at' => 'datetime',
+      'due_date'         => 'date',
+      'scheduled_at'     => 'datetime',
+      'reminder_minutes' => 'integer',
+      'created_at'       => 'datetime',
+      'updated_at'       => 'datetime',
    ];
 }

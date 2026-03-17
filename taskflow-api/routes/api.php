@@ -12,6 +12,12 @@ use App\Http\Controllers\Api\NotificationController;
 |--------------------------------------------------------------------------
 */
 
+Route::get('/up', function () {
+    return response()->json([
+        'message' => 'TaskFlow API is running',
+    ]);
+});
+
 // ── Public Auth Endpoints ───────────────────────────────────────────────
 Route::post('/register',      [AuthController::class, 'register']);
 Route::post('/login',         [AuthController::class, 'login']);
@@ -24,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
    Route::post('/logout',      [AuthController::class, 'logout']);
 
    // ── Task CRUD ──
+   Route::get('/tasks/scheduled', [TaskController::class, 'scheduled']);
    Route::get('/tasks',          [TaskController::class, 'index']);
    Route::post('/tasks',         [TaskController::class, 'store']);
    Route::get('/tasks/{id}',     [TaskController::class, 'show']);

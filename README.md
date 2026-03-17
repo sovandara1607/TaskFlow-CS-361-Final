@@ -96,7 +96,7 @@ php artisan serve
 
 ```bash
 # 1. Navigate to the project root
-cd flutter_final_project_app_with_full_ui_and_api_crud_integration
+cd TaskFlow-CS-361-Final
 
 # 2. Install Flutter dependencies
 flutter pub get

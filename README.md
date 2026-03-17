@@ -22,29 +22,6 @@
 
 </div>
 
----
-
-##  Table of Contents
-
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-- [Tech Stack](#-tech-stack)
-- [Architecture](#-architecture)
-- [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Backend Setup (Laravel API)](#backend-setup-laravel-api)
-  - [Frontend Setup (Flutter)](#frontend-setup-flutter)
-- [API Reference](#-api-reference)
-- [Database Schema](#-database-schema)
-- [Authentication Flow](#-authentication-flow)
-- [Screens & UI](#-screens--ui)
-- [State Management](#-state-management)
-- [Localization](#-localization)
-- [Notification System](#-notification-system)
-- [Dependencies](#-dependencies)
-- [Contributing](#-contributing)
-- [License](#-license)
 
 ---
 

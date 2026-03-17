@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_final_project_app_with_full_ui_and_api_crud_integration/widgets/TextTheme.dart';
 import 'package:provider/provider.dart';
 import '../services/app_settings_provider.dart';
-import '../services/notification_provider.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/constants.dart';
 import 'home_screen.dart';
-import 'task_list_screen.dart';
+import 'schedule_screen.dart';
 import 'profile_screen.dart';
-import 'notifications_screen.dart';
+import 'task_list_screen.dart';
 
 /// Main shell with a floating liquid-glass bottom navigation bar + coral FAB.
 class MainShell extends StatefulWidget {
@@ -25,11 +24,11 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   late int _currentIndex;
 
-  final _pages = const <Widget>[
+  List<Widget> get _pages => const <Widget>[
     HomeScreen(),
+    ScheduleScreen(),
     TaskListScreen(),
     ProfileScreen(),
-    NotificationsScreen(),
   ];
 
   @override
@@ -43,20 +42,19 @@ class _MainShellState extends State<MainShell> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final lang = context.watch<AppSettingsProvider>().locale;
     final bottomPad = MediaQuery.of(context).padding.bottom;
-    final unreadCount = context.watch<NotificationProvider>().unreadCount;
 
     final labels = [
       AppLocalizations.tr('', lang),
-      AppLocalizations.tr('tasks', lang),
-      AppLocalizations.tr('profile', lang),
-      AppLocalizations.tr('noti', lang),
+      AppLocalizations.tr('', lang),
+      AppLocalizations.tr('', lang),
+      AppLocalizations.tr('', lang),
     ];
 
     return Scaffold(
       extendBody: true,
       body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(16, 0, 16, bottomPad > 0 ? bottomPad : 12),
+        padding: EdgeInsets.fromLTRB(12, 0, 12, bottomPad > 0 ? bottomPad : 12),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -70,7 +68,7 @@ class _MainShellState extends State<MainShell> {
                     label: labels[i],
                     isSelected: _currentIndex == i,
                     isDark: isDark,
-                    badgeCount: i == 3 ? unreadCount : 0,
+                    badgeCount: 0,
                     onTap: () => setState(() => _currentIndex = i),
                   );
                 }),
@@ -92,9 +90,9 @@ class _MainShellState extends State<MainShell> {
 // ── Icon list matching the screenshot style ──
 const _kNavIcons = <IconData>[
   Icons.home_rounded,
+  Icons.calendar_month_rounded,
   Icons.fact_check_outlined,
   Icons.person_outline_rounded,
-  Icons.chat_bubble_outline_rounded,
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -307,7 +305,12 @@ class _CoralFAB extends StatelessWidget {
               size: const Size(80, 80),
               painter: _DashedCirclePainter(
                 color: isDark
-                    ? const Color.fromARGB(255, 230, 96, 96).withValues(alpha: 0.25)
+                    ? const Color.fromARGB(
+                        255,
+                        230,
+                        96,
+                        96,
+                      ).withValues(alpha: 0.25)
                     : const Color(0xFFFF6B6B).withValues(alpha: 0.18),
                 strokeWidth: 1.5,
                 dashCount: 28,

@@ -14,6 +14,7 @@ import 'screens/main_shell.dart';
 import 'screens/add_task_screen.dart';
 import 'screens/edit_task_screen.dart';
 import 'screens/settings_screen.dart';
+import 'screens/notifications_screen.dart';
 import 'utils/constants.dart';
 
 void main() async {
@@ -295,9 +296,10 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/': (context) => const MainShell(initialIndex: 0),
-        '/tasks': (context) => const MainShell(initialIndex: 1),
+        '/schedule': (context) => const MainShell(initialIndex: 1),
+        '/tasks': (context) => const MainShell(initialIndex: 3),
         '/profile': (context) => const MainShell(initialIndex: 2),
-        '/notifications': (context) => const MainShell(initialIndex: 3),
+        '/notifications': (context) => const NotificationsScreen(),
         '/add': (context) => const AddTaskScreen(),
         '/settings': (context) => const SettingsScreen(),
       },

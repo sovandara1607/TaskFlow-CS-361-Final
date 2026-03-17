@@ -241,7 +241,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
-                      '${AppConstants.categoryLabel(task.category)}',
+                      AppConstants.categoryLabel(task.category),
                       style: AppFonts.of(
                         context,
                         fontSize: 12,

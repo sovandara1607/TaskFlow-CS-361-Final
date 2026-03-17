@@ -121,23 +121,42 @@ class NotificationService {
     }
   }
 
-  /// Schedule a notification for a task's due date.
-  /// Fires at 8:00 AM on the due date.
+  /// Schedule a notification for a task.
+  /// Uses scheduledAt - reminderMinutes if available, otherwise 8 AM on due date.
   Future<void> scheduleTaskReminder(Task task) async {
-    if (task.id == null || task.dueDate == null) return;
+    if (task.id == null) return;
 
     try {
-      final dueDate = DateTime.tryParse(task.dueDate!);
-      if (dueDate == null) return;
+      tz.TZDateTime scheduledLocal;
 
-      // Schedule at 8 AM on the due date in the device's local timezone
-      final scheduledLocal = tz.TZDateTime(
-        tz.local,
-        dueDate.year,
-        dueDate.month,
-        dueDate.day,
-        8,
-      );
+      if (task.scheduledAt != null) {
+        // Use precise scheduled_at minus reminder offset
+        final reminderOffset = Duration(minutes: task.reminderMinutes);
+        final reminderTime = task.scheduledAt!.subtract(reminderOffset);
+
+        scheduledLocal = tz.TZDateTime(
+          tz.local,
+          reminderTime.year,
+          reminderTime.month,
+          reminderTime.day,
+          reminderTime.hour,
+          reminderTime.minute,
+        );
+      } else if (task.dueDate != null) {
+        // Fallback: 8 AM on the due date
+        final dueDate = DateTime.tryParse(task.dueDate!);
+        if (dueDate == null) return;
+
+        scheduledLocal = tz.TZDateTime(
+          tz.local,
+          dueDate.year,
+          dueDate.month,
+          dueDate.day,
+          8,
+        );
+      } else {
+        return; // No date info, can't schedule
+      }
 
       // If the scheduled time is in the past, fire immediately instead
       final now = tz.TZDateTime.now(tz.local);
@@ -146,10 +165,15 @@ class NotificationService {
         return;
       }
 
+      // Format time for notification body
+      final taskTime = task.scheduledAt != null
+          ? '${task.scheduledAt!.hour.toString().padLeft(2, '0')}:${task.scheduledAt!.minute.toString().padLeft(2, '0')}'
+          : 'today';
+
       await _plugin.zonedSchedule(
         task.id!,
-        '📋 Task Due Today',
-        '${task.title} is due today!',
+        '⏰ Task Reminder',
+        '${task.title} is due at $taskTime',
         scheduledLocal,
         _notificationDetails(),
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
@@ -159,7 +183,7 @@ class NotificationService {
       );
 
       debugPrint(
-        '[NotificationService] Scheduled task ${task.id} "${task.title}" at $scheduledLocal',
+        '[NotificationService] Scheduled task ${task.id} "${task.title}" at $scheduledLocal (reminder ${task.reminderMinutes}min before)',
       );
     } catch (e) {
       debugPrint(
@@ -177,9 +201,12 @@ class NotificationService {
 
     try {
       final title = isOverdue ? '⚠️ Overdue Task' : '📋 Task Reminder';
+      final timeStr = task.scheduledAt != null
+          ? ' (${task.scheduledAt!.hour.toString().padLeft(2, '0')}:${task.scheduledAt!.minute.toString().padLeft(2, '0')})'
+          : '';
       final body = isOverdue
-          ? '${task.title} is overdue! Due: ${task.dueDate}'
-          : '${task.title} — ${task.statusLabel}';
+          ? '${task.title} is overdue!$timeStr'
+          : '${task.title} — ${task.statusLabel}$timeStr';
 
       await _plugin.show(
         task.id!,
@@ -214,13 +241,14 @@ class NotificationService {
     }
   }
 
-  /// Schedule reminders for all incomplete tasks with due dates.
+  /// Schedule reminders for all incomplete tasks with dates.
   Future<void> scheduleAllTaskReminders(List<Task> tasks) async {
     await cancelAll();
 
     int scheduled = 0;
     for (final task in tasks) {
-      if (task.status == 'completed' || task.dueDate == null) continue;
+      if (task.status == 'completed') continue;
+      if (task.scheduledAt == null && task.dueDate == null) continue;
       await scheduleTaskReminder(task);
       scheduled++;
     }

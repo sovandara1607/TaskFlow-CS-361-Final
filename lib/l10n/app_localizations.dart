@@ -21,6 +21,8 @@ class AppLocalizations {
       'description': 'Description',
       'due_date': 'Due Date',
       'select_due_date': 'Select due date',
+      'due_time': 'Due Time',
+      'select_due_time': 'Select due time',
       'status': 'Status',
       'category': 'Category',
       'pending': 'Pending',
@@ -107,8 +109,10 @@ class AppLocalizations {
       'mark_all_read': 'Mark All Read',
       'clear_all': 'Clear All',
       'clear_all_notifications': 'Clear All Notifications',
-      'clear_all_confirm': 'Are you sure you want to delete all notifications? This cannot be undone.',
-      'notifications_empty_hint': 'You\'ll see activity here when things happen.',
+      'clear_all_confirm':
+          'Are you sure you want to delete all notifications? This cannot be undone.',
+      'notifications_empty_hint':
+          'You\'ll see activity here when things happen.',
       'noti': 'Noti',
     },
     'km': {
@@ -131,6 +135,8 @@ class AppLocalizations {
       'description': 'ការពិពណ៌នា',
       'due_date': 'កាលបរិច្ឆេទផុតកំណត់',
       'select_due_date': 'ជ្រើសរើសកាលបរិច្ឆេទ',
+      'due_time': 'ម៉ោងផុតកំណត់',
+      'select_due_time': 'ជ្រើសរើសម៉ោង',
       'status': 'ស្ថានភាព',
       'category': 'ប្រភេទ',
       'pending': 'កំពុងរង់ចាំ',
@@ -217,8 +223,10 @@ class AppLocalizations {
       'mark_all_read': 'សម្គាល់ទាំអស់ថាបានអាន',
       'clear_all': 'សម្អាតទាំងអស់',
       'clear_all_notifications': 'សម្អាតការជូនដំណឹងទាំងអស់',
-      'clear_all_confirm': 'តើអ្នកប្រាកដថាចង់លុបការជូនដំណឹងទាំងអស់មែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
-      'notifications_empty_hint': 'អ្នកនឹងឃើញសកម្មភាពនៅទីនេះនៅពេលមានអ្វីកើតឡើង។',
+      'clear_all_confirm':
+          'តើអ្នកប្រាកដថាចង់លុបការជូនដំណឹងទាំងអស់មែនទេ? សកម្មភាពនេះមិនអាចត្រឡប់វិញបានទេ។',
+      'notifications_empty_hint':
+          'អ្នកនឹងឃើញសកម្មភាពនៅទីនេះនៅពេលមានអ្វីកើតឡើង។',
       'noti': 'ដំណឹង',
     },
   };

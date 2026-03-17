@@ -225,7 +225,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                       ),
                       title: Text(
-                        '${AppLocalizations.tr('privacy_policy', lang)}',
+                        AppLocalizations.tr('privacy_policy', lang),
                         style: AppFonts.of(
                           context,
                           fontWeight: FontWeight.w700,
@@ -330,7 +330,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     title: Text(
-                      '${AppLocalizations.tr('log_out', lang)}',
+                      AppLocalizations.tr('log_out', lang),
                       style: AppFonts.of(
                         context,
                         fontWeight: FontWeight.w700,

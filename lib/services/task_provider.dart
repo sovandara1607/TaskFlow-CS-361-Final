@@ -24,6 +24,51 @@ class TaskProvider extends ChangeNotifier {
       _tasks.where((t) => t.status == 'in_progress').length;
   int get completedTasks => _tasks.where((t) => t.status == 'completed').length;
 
+  // ── Schedule Computed Lists ──
+  List<Task> get todayTasks => _tasks.where((t) => t.isToday).toList();
+  List<Task> get upcomingTasks =>
+      _tasks.where((t) => t.isUpcoming && !t.isToday).toList()
+        ..sort((a, b) {
+          final aDate = a.effectiveDate;
+          final bDate = b.effectiveDate;
+          if (aDate == null && bDate == null) return 0;
+          if (aDate == null) return 1;
+          if (bDate == null) return -1;
+          return aDate.compareTo(bDate);
+        });
+  List<Task> get overdueTasks =>
+      _tasks.where((t) => t.isOverdue).toList()
+        ..sort((a, b) {
+          final aDate = a.effectiveDate;
+          final bDate = b.effectiveDate;
+          if (aDate == null && bDate == null) return 0;
+          if (aDate == null) return 1;
+          if (bDate == null) return -1;
+          return bDate.compareTo(aDate); // most recent overdue first
+        });
+  int get overduCount => overdueTasks.length;
+
+  /// Get tasks for a specific date.
+  List<Task> tasksForDate(DateTime date) {
+    return _tasks.where((t) {
+      final d = t.effectiveDate;
+      if (d == null) return false;
+      return d.year == date.year && d.month == date.month && d.day == date.day;
+    }).toList();
+  }
+
+  /// Get all dates that have tasks (for calendar markers).
+  Set<DateTime> get taskDates {
+    final dates = <DateTime>{};
+    for (final t in _tasks) {
+      final d = t.effectiveDate;
+      if (d != null) {
+        dates.add(DateTime(d.year, d.month, d.day));
+      }
+    }
+    return dates;
+  }
+
   /// Check if notifications are enabled in user settings.
   Future<bool> _areNotificationsEnabled() async {
     final prefs = await SharedPreferences.getInstance();
@@ -57,7 +102,7 @@ class TaskProvider extends ChangeNotifier {
       _tasks.insert(0, created);
       // Schedule notification for the new task
       if (await _areNotificationsEnabled() &&
-          created.dueDate != null &&
+          (created.scheduledAt != null || created.dueDate != null) &&
           created.status != 'completed') {
         await NotificationService.instance.scheduleTaskReminder(created);
       }
@@ -82,7 +127,7 @@ class TaskProvider extends ChangeNotifier {
       if (updated.id != null) {
         await NotificationService.instance.cancelTaskReminder(updated.id!);
         if (await _areNotificationsEnabled() &&
-            updated.dueDate != null &&
+            (updated.scheduledAt != null || updated.dueDate != null) &&
             updated.status != 'completed') {
           await NotificationService.instance.scheduleTaskReminder(updated);
         }

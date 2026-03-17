@@ -27,6 +27,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   late String _status;
   late String _category;
   DateTime? _dueDate;
+  TimeOfDay? _dueTime;
   bool _isSaving = false;
 
   static const _statuses = {
@@ -42,7 +43,15 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     _descCtrl = TextEditingController(text: widget.task.description);
     _status = widget.task.status;
     _category = widget.task.category;
-    if (widget.task.dueDate != null) {
+    if (widget.task.scheduledAt != null) {
+      final localScheduled = widget.task.scheduledAt!.toLocal();
+      _dueDate = DateTime(
+        localScheduled.year,
+        localScheduled.month,
+        localScheduled.day,
+      );
+      _dueTime = TimeOfDay.fromDateTime(localScheduled);
+    } else if (widget.task.dueDate != null) {
       try {
         _dueDate = DateTime.parse(widget.task.dueDate!);
       } catch (_) {}
@@ -78,10 +87,47 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     }
   }
 
+  Future<void> _pickTime() async {
+    // Keep date and time aligned by prompting for a date first when needed.
+    if (_dueDate == null) {
+      await _pickDate();
+      if (_dueDate == null || !mounted) return;
+    }
+
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _dueTime ?? TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(
+              context,
+            ).colorScheme.copyWith(primary: AppConstants.primaryColor),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() => _dueTime = picked);
+    }
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isSaving = true);
+
+    final scheduledAt = (_dueDate != null && _dueTime != null)
+        ? DateTime(
+            _dueDate!.year,
+            _dueDate!.month,
+            _dueDate!.day,
+            _dueTime!.hour,
+            _dueTime!.minute,
+          )
+        : widget.task.scheduledAt;
 
     final updatedTask = widget.task.copyWith(
       title: _titleCtrl.text.trim(),
@@ -91,6 +137,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       dueDate: _dueDate != null
           ? '${_dueDate!.year}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}'
           : widget.task.dueDate,
+      scheduledAt: scheduledAt,
     );
 
     final success = await context.read<TaskProvider>().updateTask(updatedTask);
@@ -146,6 +193,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     final dateStr = _dueDate != null
         ? '${_dueDate!.day.toString().padLeft(2, '0')} / ${_dueDate!.month.toString().padLeft(2, '0')} / ${_dueDate!.year}'
         : AppLocalizations.tr('select_due_date', lang);
+    final timeStr = _dueTime != null
+        ? _dueTime!.format(context)
+        : AppLocalizations.tr('select_due_time', lang);
 
     return Scaffold(
       backgroundColor: headerColor,
@@ -176,7 +226,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                           child: Text(
                             AppLocalizations.tr('edit_task', lang),
                             textAlign: TextAlign.center,
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -194,7 +245,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    // Title + Date in header
+                    // Title + Date/Time in header
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(
@@ -202,7 +253,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         children: [
                           Text(
                             AppLocalizations.tr('task_title', lang),
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: Colors.white60,
@@ -224,7 +276,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                 child: TextFormField(
                                   controller: _titleCtrl,
                                   validator: Validators.minLength3,
-                                  style: AppFonts.of(context, 
+                                  style: AppFonts.of(
+                                    context,
                                     color: Colors.black87,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
@@ -234,11 +287,13 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                       'enter_task_title',
                                       lang,
                                     ),
-                                    hintStyle: AppFonts.of(context, 
+                                    hintStyle: AppFonts.of(
+                                      context,
                                       color: Colors.white30,
                                       fontSize: 16,
                                     ),
-                                    errorStyle: AppFonts.of(context, 
+                                    errorStyle: AppFonts.of(
+                                      context,
                                       color: const Color(0xFFFF6B6B),
                                       fontSize: 12,
                                     ),
@@ -257,7 +312,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                           const SizedBox(height: 14),
                           Text(
                             AppLocalizations.tr('due_date', lang),
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: Colors.white60,
@@ -276,10 +332,46 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                 const SizedBox(width: 8),
                                 Text(
                                   dateStr,
-                                  style: AppFonts.of(context, 
+                                  style: AppFonts.of(
+                                    context,
                                     fontSize: 15,
                                     fontWeight: FontWeight.w500,
                                     color: _dueDate != null
+                                        ? Colors.white
+                                        : Colors.white38,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            AppLocalizations.tr('due_time', lang),
+                            style: AppFonts.of(
+                              context,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white60,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          GestureDetector(
+                            onTap: _pickTime,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.access_time_rounded,
+                                  size: 16,
+                                  color: Colors.white70,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  timeStr,
+                                  style: AppFonts.of(
+                                    context,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500,
+                                    color: _dueTime != null
                                         ? Colors.white
                                         : Colors.white38,
                                   ),
@@ -321,7 +413,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       // ── Description ──
                       Text(
                         AppLocalizations.tr('description', lang),
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: isDark
@@ -334,7 +427,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         controller: _descCtrl,
                         maxLines: 3,
                         validator: Validators.required,
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 14,
                           color: isDark
                               ? Colors.white
@@ -345,7 +439,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                             'enter_description',
                             lang,
                           ),
-                          hintStyle: AppFonts.of(context, 
+                          hintStyle: AppFonts.of(
+                            context,
                             fontSize: 14,
                             color: isDark
                                 ? Colors.white30
@@ -379,7 +474,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       // ── Category ──
                       Text(
                         AppLocalizations.tr('category', lang),
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: isDark
@@ -434,7 +530,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                   const SizedBox(width: 6),
                                   Text(
                                     AppConstants.categoryLabel(cat),
-                                    style: AppFonts.of(context, 
+                                    style: AppFonts.of(
+                                      context,
                                       fontSize: 13,
                                       fontWeight: selected
                                           ? FontWeight.w600
@@ -457,7 +554,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       // ── Status ──
                       Text(
                         AppLocalizations.tr('status', lang),
-                        style: AppFonts.of(context, 
+                        style: AppFonts.of(
+                          context,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
                           color: isDark
@@ -514,7 +612,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                                       const SizedBox(height: 4),
                                       Text(
                                         e.value,
-                                        style: AppFonts.of(context, 
+                                        style: AppFonts.of(
+                                          context,
                                           fontSize: 11,
                                           fontWeight: selected
                                               ? FontWeight.w700
@@ -565,7 +664,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                             _isSaving
                                 ? AppLocalizations.tr('saving', lang)
                                 : AppLocalizations.tr('update_task', lang),
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
                             ),

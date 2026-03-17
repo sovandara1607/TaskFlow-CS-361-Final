@@ -77,7 +77,8 @@ class AppDrawer extends StatelessWidget {
                             displayName.isNotEmpty
                                 ? displayName[0].toUpperCase()
                                 : '?',
-                            style: AppFonts.of(context, 
+                            style: AppFonts.of(
+                              context,
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
@@ -92,7 +93,8 @@ class AppDrawer extends StatelessWidget {
                           children: [
                             Text(
                               displayName,
-                              style: AppFonts.of(context, 
+                              style: AppFonts.of(
+                                context,
                                 fontWeight: FontWeight.w700,
                                 fontSize: 16,
                                 color: isDark
@@ -105,7 +107,8 @@ class AppDrawer extends StatelessWidget {
                             const SizedBox(height: 2),
                             Text(
                               displayEmail,
-                              style: AppFonts.of(context, 
+                              style: AppFonts.of(
+                                context,
                                 fontSize: 12,
                                 color: isDark
                                     ? Colors.white54
@@ -148,9 +151,9 @@ class AppDrawer extends StatelessWidget {
                             isDark: isDark,
                           ),
                           _DrawerNavItem(
-                            icon: Icons.checklist_rounded,
-                            title: AppLocalizations.tr('tasks', lang),
-                            onTap: () => _navigate(context, '/tasks'),
+                            icon: Icons.calendar_month_rounded,
+                            title: AppLocalizations.tr('schedule', lang),
+                            onTap: () => _navigate(context, '/schedule'),
                             isDark: isDark,
                           ),
                           _DrawerNavItem(
@@ -294,7 +297,8 @@ class _SectionLabel extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8, bottom: 2),
       child: Text(
         label,
-        style: AppFonts.of(context, 
+        style: AppFonts.of(
+          context,
           fontSize: 11,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.0,
@@ -401,7 +405,8 @@ class _DrawerNavItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: AppFonts.of(context, 
+                  style: AppFonts.of(
+                    context,
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color:

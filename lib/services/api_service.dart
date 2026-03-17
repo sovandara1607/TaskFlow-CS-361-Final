@@ -115,6 +115,22 @@ class ApiService {
     }
   }
 
+  /// Fetch filtered scheduled tasks (GET /api/tasks/scheduled?filter=...)
+  Future<List<Task>> fetchScheduledTasks(String filter) async {
+    final response = await http.get(
+      Uri.parse('$_baseUrl/tasks/scheduled?filter=$filter'),
+      headers: _headers,
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> body = json.decode(response.body);
+      final List<dynamic> data = body['data'] ?? [];
+      return data.map((item) => Task.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load scheduled tasks (${response.statusCode})');
+    }
+  }
+
   // ════════════════════════════════════════════════════════════════════════
   // NOTIFICATIONS
   // ════════════════════════════════════════════════════════════════════════

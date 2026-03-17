@@ -645,31 +645,7 @@ class _ScheduleHeader extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              Icon(
-                Icons.tips_and_updates_outlined,
-                size: 14,
-                color: isDark ? Colors.white54 : AppConstants.textSecondary,
-              ),
-              const SizedBox(width: 6),
-              Expanded(
-                child: Text(
-                  'Tip: Drag card to move. Drag top or bottom edge to adjust time.',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppFonts.of(
-                    context,
-                    fontSize: 11,
-                    color: isDark ? Colors.white54 : AppConstants.textSecondary,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ])
     );
   }
 }

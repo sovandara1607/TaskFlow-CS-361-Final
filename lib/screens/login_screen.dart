@@ -13,7 +13,7 @@ import '../utils/validators.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/glass_container.dart';
 
-/// Tiimo-style login screen with email/password + GitHub sign-in.
+/// login screen with email/password + GitHub sign-in.
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // ── Logo ──
+                  // Logo
                   GlassContainer(
                     borderRadius: 40,
                     padding: const EdgeInsets.all(20),
@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 36),
 
-                  // ── Form Card ──
+                  // Form Card
                   GlassContainer(
                     borderRadius: AppConstants.cardRadius,
                     padding: const EdgeInsets.all(24),
@@ -241,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 8),
 
-                          // ── Login Button ──
+                          // Login Button
                           SizedBox(
                             width: double.infinity,
                             height: 50,
@@ -272,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // ── Divider ──
+                  // Divider
                   Row(
                     children: [
                       Expanded(
@@ -306,7 +306,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // ── GitHub Sign-In ──
+                  // GitHub Sign-In
                   SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -359,7 +359,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 28),
 
-                  // ── Register link ──
+                  // Register link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

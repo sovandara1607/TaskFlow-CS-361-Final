@@ -58,7 +58,7 @@ class _MainShellState extends State<MainShell> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // ── Liquid-glass navigation pill ──
+            // Liquid-glass navigation pill
             Expanded(
               child: _LiquidGlassBar(
                 isDark: isDark,
@@ -75,7 +75,7 @@ class _MainShellState extends State<MainShell> {
               ),
             ),
             const SizedBox(width: 12),
-            // ── Coral 3-D FAB ──
+            //  Coral 3-D FAB
             _CoralFAB(
               onTap: () => Navigator.pushNamed(context, '/add'),
               isDark: isDark,
@@ -87,7 +87,7 @@ class _MainShellState extends State<MainShell> {
   }
 }
 
-// ── Icon list matching the screenshot style ──
+// Icon list matching the screenshot style
 const _kNavIcons = <IconData>[
   Icons.home_rounded,
   Icons.calendar_month_rounded,
@@ -95,9 +95,9 @@ const _kNavIcons = <IconData>[
   Icons.person_outline_rounded,
 ];
 
-// ─────────────────────────────────────────────────────────────────────────────
+
 // Liquid-glass navigation bar
-// ─────────────────────────────────────────────────────────────────────────────
+
 class _LiquidGlassBar extends StatelessWidget {
   final bool isDark;
   final List<Widget> items;
@@ -154,9 +154,9 @@ class _LiquidGlassBar extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+
 // Single nav-bar item – selected shows white pill + icon + label
-// ─────────────────────────────────────────────────────────────────────────────
+
 class _GlassNavItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -281,9 +281,8 @@ class _GlassNavItem extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Coral 3-D floating FAB with radial gradient + dashed outer ring
-// ─────────────────────────────────────────────────────────────────────────────
+
 class _CoralFAB extends StatelessWidget {
   final VoidCallback onTap;
   final bool isDark;
@@ -300,7 +299,7 @@ class _CoralFAB extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // ── Dashed ring ──
+            // Dashed ring
             CustomPaint(
               size: const Size(80, 80),
               painter: _DashedCirclePainter(
@@ -316,7 +315,7 @@ class _CoralFAB extends StatelessWidget {
                 dashCount: 28,
               ),
             ),
-            // ── 3-D coral ball ──
+            // 3-D coral ball
             Container(
               width: 80,
               height: 80,
@@ -356,9 +355,7 @@ class _CoralFAB extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Dashed-circle painter (outer ring around the FAB)
-// ─────────────────────────────────────────────────────────────────────────────
 class _DashedCirclePainter extends CustomPainter {
   final Color color;
   final double strokeWidth;

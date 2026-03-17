@@ -146,9 +146,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Empty state
-// ─────────────────────────────────────────────────────────────────────────────
+
 class _EmptyState extends StatelessWidget {
   final bool isDark;
   final String lang;
@@ -194,9 +193,8 @@ class _EmptyState extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Notification card with swipe-to-delete
-// ─────────────────────────────────────────────────────────────────────────────
+
 class _NotificationCard extends StatelessWidget {
   final AppNotification notification;
   final bool isDark;
@@ -240,7 +238,7 @@ class _NotificationCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── Icon ──
+                // Icon
                 Container(
                   width: 42,
                   height: 42,
@@ -259,7 +257,7 @@ class _NotificationCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // ── Content ──
+                // Content
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

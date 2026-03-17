@@ -12,7 +12,7 @@ import '../utils/constants.dart';
 import '../utils/alert_helper.dart';
 import '../widgets/glass_container.dart';
 
-/// Tiimo‑style Task List Screen — filter chips, swipe gestures, categories.
+/// Task List Screen
 class TaskListScreen extends StatefulWidget {
   const TaskListScreen({super.key});
 
@@ -412,7 +412,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       body: Column(
         children: [
-          // ── Search bar ──
+          // Search bar
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 12),
             child: GlassContainer(
@@ -445,7 +445,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
           ),
 
-          // ── Status filter chips ──
+          //  Status filter chips
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: SingleChildScrollView(
@@ -489,7 +489,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           ),
           const SizedBox(height: 8),
 
-          // ── Category filter chips ──
+          // Category filter chips
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: SingleChildScrollView(
@@ -522,7 +522,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           ),
           const SizedBox(height: 12),
 
-          // ── Task list with Slidable gestures ──
+          // Task list with Slidable gestures
           Expanded(
             child: Consumer<TaskProvider>(
               builder: (context, provider, __) {
@@ -734,7 +734,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 }
 
-// ── Custom filter chip ──
+// Custom filter chip
 class _FilterChip extends StatelessWidget {
   final String label;
   final IconData icon;

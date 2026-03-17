@@ -10,7 +10,7 @@ import '../widgets/app_dialogs.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
 
-/// Edit Task Screen — Tiimo‑style form with category, dark mode.
+/// Edit Task Screen
 class EditTaskScreen extends StatefulWidget {
   final Task task;
 
@@ -285,7 +285,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         key: _formKey,
         child: Column(
           children: [
-            // ── COLORED HEADER ──
+            // COLORED HEADER
             SafeArea(
               bottom: false,
               child: Padding(
@@ -526,7 +526,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               ),
             ),
 
-            // ── WHITE FORM CARD ──
+            // WHITE FORM CARD
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -548,7 +548,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ── Description ──
+                      // Description
                       Text(
                         AppLocalizations.tr('description', lang),
                         style: AppFonts.of(
@@ -609,7 +609,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // ── Category ──
+                      // Category
                       Text(
                         AppLocalizations.tr('category', lang),
                         style: AppFonts.of(
@@ -689,7 +689,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // ── Status ──
+                      // Status
                       Text(
                         AppLocalizations.tr('status', lang),
                         style: AppFonts.of(
@@ -775,7 +775,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
 
                       const SizedBox(height: 36),
 
-                      // ── Update Task button (solid, rounded) ──
+                      // Update Task button (solid, rounded)
                       SizedBox(
                         width: double.infinity,
                         height: 54,

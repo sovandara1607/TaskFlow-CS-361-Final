@@ -9,7 +9,7 @@ import '../utils/validators.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/glass_container.dart';
 
-/// Tiimo-style registration screen.
+/// registration screen.
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -96,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // ── Logo ──
+                  // Logo
                   GlassContainer(
                     borderRadius: 40,
                     padding: const EdgeInsets.all(20),
@@ -130,7 +130,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 32),
 
-                  // ── Form Card ──
+                  // Form Card
                   GlassContainer(
                     borderRadius: AppConstants.cardRadius,
                     padding: const EdgeInsets.all(24),
@@ -252,7 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 8),
 
-                          // ── Register Button ──
+                          // Register Button
                           SizedBox(
                             width: double.infinity,
                             height: 50,
@@ -285,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 28),
 
-                  // ── Login link ──
+                  // Login link
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

@@ -10,7 +10,7 @@ import '../widgets/app_dialogs.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
 
-/// Add Task Screen — Tiimo‑style form with category selector.
+/// Add Task Screen
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
 
@@ -236,7 +236,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         key: _formKey,
         child: Column(
           children: [
-            // ── COLORED HEADER ──
+            // COLORED HEADER
             SafeArea(
               bottom: false,
               child: Padding(
@@ -470,7 +470,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
             ),
 
-            // ── WHITE FORM CARD ──
+            // WHITE FORM CARD
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -492,7 +492,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ── Description ──
+                      // Description
                       Text(
                         AppLocalizations.tr('description', lang),
                         style: AppFonts.of(
@@ -553,7 +553,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // ── Category ──
+                      // Category
                       Text(
                         AppLocalizations.tr('category', lang),
                         style: AppFonts.of(
@@ -633,7 +633,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      // ── Status ──
+                      // Status
                       Text(
                         AppLocalizations.tr('status', lang),
                         style: AppFonts.of(
@@ -719,7 +719,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
                       const SizedBox(height: 36),
 
-                      // ── Create Task button (solid, rounded) ──
+                      // Create Task button (solid, rounded)
                       SizedBox(
                         width: double.infinity,
                         height: 54,

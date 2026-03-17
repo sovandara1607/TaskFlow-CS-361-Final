@@ -6,7 +6,7 @@ import '../services/api_service.dart';
 import '../utils/constants.dart';
 import '../widgets/glass_container.dart';
 
-/// Tiimo‑style splash screen with gradient and animated logo.
+/// splash screen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 

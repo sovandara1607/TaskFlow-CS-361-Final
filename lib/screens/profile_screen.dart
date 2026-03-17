@@ -195,7 +195,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(AppConstants.defaultPadding),
         child: Column(
           children: [
-            // ── Profile card — avatar, name, email, edit button ──
+            // Profile card — avatar, name, email, edit button
             GlassContainer(
               borderRadius: 22,
               padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
@@ -300,7 +300,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── Task Statistics ──
+            // Task Statistics
             _SectionHeader(
               title: AppLocalizations.tr('task_statistics', lang),
               isDark: isDark,
@@ -335,7 +335,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 20),
 
-            // ── Account Details ──
+            // Account Details
             _SectionHeader(
               title: AppLocalizations.tr('account_details', lang),
               isDark: isDark,
@@ -384,7 +384,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 28),
 
-            // ── Logout button ──
+            // Logout button
             SizedBox(
               width: double.infinity,
               height: 48,
@@ -442,7 +442,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-// ── Section header ──
+// Section header
 class _SectionHeader extends StatelessWidget {
   final String title;
   final bool isDark;
@@ -465,7 +465,7 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ── Stat card ──
+// Stat card
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;
@@ -516,7 +516,7 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-// ── Info row (used inside a single GlassContainer) ──
+// Info row (used inside a single GlassContainer)
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -581,7 +581,7 @@ class _InfoRow extends StatelessWidget {
   }
 }
 
-// ── Save profile button with loading state ──
+// Save profile button with loading state
 class _SaveProfileButton extends StatefulWidget {
   final TextEditingController nameCtrl;
   final TextEditingController emailCtrl;
@@ -704,7 +704,7 @@ class _SaveProfileButtonState extends State<_SaveProfileButton> {
   }
 }
 
-// ── Text field used in the edit-profile bottom sheet ──
+// Text field used in the edit-profile bottom sheet
 class _ProfileTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;

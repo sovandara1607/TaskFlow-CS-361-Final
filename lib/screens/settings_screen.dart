@@ -11,7 +11,7 @@ import '../utils/constants.dart';
 import '../utils/alert_helper.dart';
 import '../widgets/glass_container.dart';
 
-/// Settings Screen — All toggles wired to AppSettingsProvider for persistence.
+/// Settings Screen
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -35,7 +35,7 @@ class SettingsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppConstants.defaultPadding),
         children: [
-          // ── Appearance ──
+          // Appearance
           _SectionHeader(
             icon: Icons.palette_outlined,
             title: AppLocalizations.tr('appearance', lang).toUpperCase(),
@@ -128,7 +128,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // ── Notifications & Security ──
+          // Notifications & Security
           _SectionHeader(
             icon: Icons.notifications_outlined,
             title: AppLocalizations.tr('notifications', lang).toUpperCase(),
@@ -186,7 +186,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // ── Account ──
+          // Account
           _SectionHeader(
             icon: Icons.person_outline_rounded,
             title: AppLocalizations.tr('account', lang).toUpperCase(),
@@ -267,7 +267,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          // ── About ──
+          // About
           Center(
             child: Column(
               children: [
@@ -281,13 +281,6 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                // Text(
-                //   'CS361 — Mobile App Development',
-                //   style: AppFonts.of(context,
-                //     fontSize: 12,
-                //     color: isDark ? Colors.white38 : AppConstants.textLight,
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -405,7 +398,7 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-// ── Soft rounded card wrapper ──
+// Soft rounded card wrapper
 class _SettingsCard extends StatelessWidget {
   final List<Widget> children;
   final bool isDark;
@@ -423,7 +416,7 @@ class _SettingsCard extends StatelessWidget {
   }
 }
 
-// ── Section header with icon ──
+// Section header with icon
 class _SectionHeader extends StatelessWidget {
   final IconData icon;
   final String title;

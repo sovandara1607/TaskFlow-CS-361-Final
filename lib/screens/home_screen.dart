@@ -11,7 +11,7 @@ import '../utils/constants.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/glass_container.dart';
 
-/// Tiimo‑style Home Screen — "Today" view with date header, stats and tasks.
+///  Home Screen
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ── Date header ──
+              // Date header
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
                 child: Column(
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
               const SizedBox(height: 16),
 
-              // ── Daily progress bar ──
+              // Daily progress bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Consumer<TaskProvider>(
@@ -193,7 +193,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
               const SizedBox(height: 16),
 
-              // ── Greeting card (animated by time of day) ──
+              // Greeting card (animated by time of day)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: _GreetingCard(
@@ -206,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
               const SizedBox(height: 24),
 
-              // ── Stats row ──
+              // Stats row
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Consumer<TaskProvider>(
@@ -249,7 +249,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               ),
               const SizedBox(height: 28),
 
-              // ── Task sections ──
+              // Task sections
               Consumer<TaskProvider>(
                 builder: (_, provider, __) {
                   if (provider.isLoading && provider.tasks.isEmpty) {
@@ -382,7 +382,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 }
 
-// ── Stat bubble ──
+// Stat bubble
 class _StatBubble extends StatelessWidget {
   final IconData icon;
   final String value;
@@ -434,7 +434,7 @@ class _StatBubble extends StatelessWidget {
   }
 }
 
-// ── Section header ──
+// Section header
 class _SectionHeader extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -493,7 +493,7 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-// ── Mini task tile for the home screen with swipe gestures ──
+// Mini task tile for the home screen with swipe gestures
 class _MiniTaskTile extends StatelessWidget {
   final Task task;
   final BuildContext parentContext;
@@ -727,7 +727,7 @@ class _MiniTaskTile extends StatelessWidget {
   }
 }
 
-// ── Animated greeting card based on time of day ──
+// Animated greeting card based on time of day
 class _GreetingCard extends StatefulWidget {
   final String greeting;
   final String userName;
@@ -883,7 +883,7 @@ class _GreetingCardState extends State<_GreetingCard>
             padding: const EdgeInsets.all(24),
             child: Row(
               children: [
-                // ── Text + button ──
+                // Text + button
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -932,7 +932,7 @@ class _GreetingCardState extends State<_GreetingCard>
                     ],
                   ),
                 ),
-                // ── Floating time icon ──
+                // Floating time icon
                 Transform.translate(
                   offset: Offset(0, _floatAnim.value),
                   child: Opacity(
@@ -949,7 +949,7 @@ class _GreetingCardState extends State<_GreetingCard>
   }
 }
 
-// ── Compact daily progress bar ──
+// Compact daily progress bar
 class _DailyProgressBar extends StatelessWidget {
   final double progress;
   final int completed;

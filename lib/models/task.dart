@@ -7,6 +7,7 @@ class Task {
   final String category; // general, school, work, home, personal
   final String? dueDate; // yyyy-MM-dd
   final DateTime? scheduledAt; // full date+time
+  final DateTime? endsAt; // optional end date+time
   final int reminderMinutes; // minutes before to notify
   final String? createdAt;
   final String? updatedAt;
@@ -19,6 +20,7 @@ class Task {
     this.category = 'general',
     this.dueDate,
     this.scheduledAt,
+    this.endsAt,
     this.reminderMinutes = 15,
     this.createdAt,
     this.updatedAt,
@@ -41,6 +43,14 @@ class Task {
       }
     }
 
+    DateTime? parsedEndsAt;
+    if (json['ends_at'] != null) {
+      final parsed = DateTime.tryParse(json['ends_at'] as String);
+      if (parsed != null) {
+        parsedEndsAt = parsed.isUtc ? parsed.toLocal() : parsed;
+      }
+    }
+
     return Task(
       id: json['id'] as int?,
       title: json['title'] as String? ?? '',
@@ -49,6 +59,7 @@ class Task {
       category: json['category'] as String? ?? 'general',
       dueDate: rawDue,
       scheduledAt: parsedScheduledAt,
+      endsAt: parsedEndsAt,
       reminderMinutes: json['reminder_minutes'] as int? ?? 15,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
@@ -65,6 +76,7 @@ class Task {
       'due_date': dueDate,
       if (scheduledAt != null)
         'scheduled_at': scheduledAt!.toUtc().toIso8601String(),
+      if (endsAt != null) 'ends_at': endsAt!.toUtc().toIso8601String(),
       'reminder_minutes': reminderMinutes,
     };
   }
@@ -78,6 +90,8 @@ class Task {
     String? category,
     String? dueDate,
     DateTime? scheduledAt,
+    DateTime? endsAt,
+    bool clearEndsAt = false,
     bool clearScheduledAt = false,
     int? reminderMinutes,
     String? createdAt,
@@ -91,6 +105,7 @@ class Task {
       category: category ?? this.category,
       dueDate: dueDate ?? this.dueDate,
       scheduledAt: clearScheduledAt ? null : (scheduledAt ?? this.scheduledAt),
+      endsAt: clearEndsAt ? null : (endsAt ?? this.endsAt),
       reminderMinutes: reminderMinutes ?? this.reminderMinutes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

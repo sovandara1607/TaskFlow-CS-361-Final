@@ -49,21 +49,21 @@ class TaskController extends Controller
       switch ($filter) {
          case 'today':
             $query->whereDate('scheduled_at', $now->toDateString())
-                  ->orderBy('scheduled_at', 'asc');
+               ->orderBy('scheduled_at', 'asc');
             break;
          case 'upcoming':
             $query->where('scheduled_at', '>', $now)
-                  ->where('status', '!=', 'completed')
-                  ->orderBy('scheduled_at', 'asc');
+               ->where('status', '!=', 'completed')
+               ->orderBy('scheduled_at', 'asc');
             break;
          case 'overdue':
             $query->where('scheduled_at', '<', $now)
-                  ->where('status', '!=', 'completed')
-                  ->orderBy('scheduled_at', 'desc');
+               ->where('status', '!=', 'completed')
+               ->orderBy('scheduled_at', 'desc');
             break;
          default:
             $query->whereNotNull('scheduled_at')
-                  ->orderBy('scheduled_at', 'asc');
+               ->orderBy('scheduled_at', 'asc');
       }
 
       return response()->json([
@@ -85,6 +85,7 @@ class TaskController extends Controller
          'due_date'         => 'nullable|date',
          'category'         => 'nullable|string|in:general,school,work,home,personal',
          'scheduled_at'     => 'nullable|date',
+         'ends_at'          => 'nullable|date|after:scheduled_at',
          'reminder_minutes' => 'nullable|integer|min:0|max:1440',
       ]);
 
@@ -95,6 +96,7 @@ class TaskController extends Controller
          'due_date'         => $validated['due_date'] ?? null,
          'category'         => $validated['category'] ?? 'general',
          'scheduled_at'     => $validated['scheduled_at'] ?? null,
+         'ends_at'          => $validated['ends_at'] ?? null,
          'reminder_minutes' => $validated['reminder_minutes'] ?? 15,
       ]);
 
@@ -156,6 +158,7 @@ class TaskController extends Controller
          'due_date'         => 'nullable|date',
          'category'         => 'nullable|string|in:general,school,work,home,personal',
          'scheduled_at'     => 'nullable|date',
+         'ends_at'          => 'nullable|date|after:scheduled_at',
          'reminder_minutes' => 'nullable|integer|min:0|max:1440',
       ]);
 
@@ -166,6 +169,7 @@ class TaskController extends Controller
          'due_date'         => $validated['due_date'] ?? $task->due_date,
          'category'         => $validated['category'] ?? $task->category,
          'scheduled_at'     => $validated['scheduled_at'] ?? $task->scheduled_at,
+         'ends_at'          => $validated['ends_at'] ?? $task->ends_at,
          'reminder_minutes' => $validated['reminder_minutes'] ?? $task->reminder_minutes,
       ]);
 

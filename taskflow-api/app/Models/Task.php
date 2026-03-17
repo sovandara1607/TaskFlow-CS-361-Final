@@ -25,6 +25,7 @@ class Task extends Model
       'category',
       'user_id',
       'scheduled_at',
+      'ends_at',
       'reminder_minutes',
    ];
 
@@ -34,6 +35,7 @@ class Task extends Model
    protected $casts = [
       'due_date'         => 'date',
       'scheduled_at'     => 'datetime',
+      'ends_at'          => 'datetime',
       'reminder_minutes' => 'integer',
       'created_at'       => 'datetime',
       'updated_at'       => 'datetime',

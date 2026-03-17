@@ -26,6 +26,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   String _category = 'general';
   DateTime? _dueDate;
   TimeOfDay? _dueTime;
+  TimeOfDay? _endTime;
   bool _isSaving = false;
 
   static const _statuses = {
@@ -86,7 +87,58 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
 
     if (picked != null) {
-      setState(() => _dueTime = picked);
+      setState(() {
+        _dueTime = picked;
+        if (_endTime == null) {
+          final startMinutes = (_dueTime!.hour * 60) + _dueTime!.minute;
+          final endMinutes = startMinutes + 60;
+          _endTime = TimeOfDay(
+            hour: (endMinutes ~/ 60) % 24,
+            minute: endMinutes % 60,
+          );
+        }
+      });
+    }
+  }
+
+  Future<void> _pickEndTime() async {
+    if (_dueDate == null) {
+      await _pickDate();
+      if (_dueDate == null || !mounted) return;
+    }
+
+    final picked = await showTimePicker(
+      context: context,
+      initialTime:
+          _endTime ??
+          _dueTime ??
+          TimeOfDay.fromDateTime(DateTime.now().add(const Duration(hours: 1))),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(
+              context,
+            ).colorScheme.copyWith(primary: AppConstants.primaryColor),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        _endTime = picked;
+        if (_dueTime == null) {
+          final endMinutes = (_endTime!.hour * 60) + _endTime!.minute;
+          final startMinutes = (endMinutes - 60) < 0
+              ? endMinutes
+              : (endMinutes - 60);
+          _dueTime = TimeOfDay(
+            hour: (startMinutes ~/ 60) % 24,
+            minute: startMinutes % 60,
+          );
+        }
+      });
     }
   }
 
@@ -105,6 +157,30 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           )
         : null;
 
+    final endsAt = (_dueDate != null && _endTime != null)
+        ? DateTime(
+            _dueDate!.year,
+            _dueDate!.month,
+            _dueDate!.day,
+            _endTime!.hour,
+            _endTime!.minute,
+          )
+        : null;
+
+    if (scheduledAt != null && endsAt != null && !endsAt.isAfter(scheduledAt)) {
+      if (mounted) {
+        await AppDialogs.showError(
+          context: context,
+          message: AppLocalizations.tr(
+            'invalid_time_range',
+            context.read<AppSettingsProvider>().locale,
+          ),
+        );
+      }
+      setState(() => _isSaving = false);
+      return;
+    }
+
     final task = Task(
       title: _titleCtrl.text.trim(),
       description: _descCtrl.text.trim(),
@@ -114,6 +190,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           ? '${_dueDate!.year}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}'
           : null,
       scheduledAt: scheduledAt,
+      endsAt: endsAt,
     );
 
     final success = await context.read<TaskProvider>().addTask(task);
@@ -148,7 +225,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         : AppLocalizations.tr('select_due_date', lang);
     final timeStr = _dueTime != null
         ? _dueTime!.format(context)
-        : AppLocalizations.tr('select_due_time', lang);
+        : AppLocalizations.tr('select_start_time', lang);
+    final endTimeStr = _endTime != null
+        ? _endTime!.format(context)
+        : AppLocalizations.tr('select_end_time', lang);
 
     return Scaffold(
       backgroundColor: headerColor,
@@ -291,39 +371,95 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             ),
                           ),
                           const SizedBox(height: 12),
-                          Text(
-                            AppLocalizations.tr('due_time', lang),
-                            style: AppFonts.of(
-                              context,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white60,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          GestureDetector(
-                            onTap: _pickTime,
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.access_time_rounded,
-                                  size: 16,
-                                  color: Colors.white70,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.tr('start_time', lang),
+                                      style: AppFonts.of(
+                                        context,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white60,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    GestureDetector(
+                                      onTap: _pickTime,
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.access_time_rounded,
+                                            size: 16,
+                                            color: Colors.white70,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            timeStr,
+                                            style: AppFonts.of(
+                                              context,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                              color: _dueTime != null
+                                                  ? Colors.white
+                                                  : Colors.white38,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  timeStr,
-                                  style: AppFonts.of(
-                                    context,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: _dueTime != null
-                                        ? Colors.white
-                                        : Colors.white38,
-                                  ),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      AppLocalizations.tr('end_time', lang),
+                                      style: AppFonts.of(
+                                        context,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white60,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    GestureDetector(
+                                      onTap: _pickEndTime,
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.timelapse_rounded,
+                                            size: 16,
+                                            color: Colors.white70,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              endTimeStr,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: AppFonts.of(
+                                                context,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w500,
+                                                color: _endTime != null
+                                                    ? Colors.white
+                                                    : Colors.white38,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
